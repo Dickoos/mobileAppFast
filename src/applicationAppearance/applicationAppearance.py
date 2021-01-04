@@ -34,6 +34,8 @@ class MobileApp(App):
 
 
 class RootWidget(BoxLayout):
+    popup = ObjectProperty(None)
+
     text_input_username = ObjectProperty(None)
     text_input_password = ObjectProperty(None)
     # TODO Разберись, зачем этот контейнер
@@ -47,7 +49,7 @@ class RootWidget(BoxLayout):
         """
 
         # TODO Нормальную проверку логина и пароля
-        if Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text):
-            self.text_input_username.text = "Правильно!"
-        else:
-            self.text_input_username.text = "Не-а"
+        type_of_user = Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text)
+
+        if type_of_user == Authorization.none_user:
+            self.popup.open()
