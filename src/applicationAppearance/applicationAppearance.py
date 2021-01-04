@@ -3,6 +3,8 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
+from src.authorization import Authorization
+
 
 class MobileApp(App):
     def build(self):
@@ -33,6 +35,7 @@ class MobileApp(App):
 
 class RootWidget(BoxLayout):
     text_input_username = ObjectProperty(None)
+    text_input_password = ObjectProperty(None)
     # TODO Разберись, зачем этот контейнер
     container = ObjectProperty(None)
 
@@ -44,4 +47,7 @@ class RootWidget(BoxLayout):
         """
 
         # TODO Нормальную проверку логина и пароля
-        self.text_input_username.text = "Тестовый логин!"
+        if Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text):
+            self.text_input_username.text = "Правильно!"
+        else:
+            self.text_input_username.text = "Не-а"
