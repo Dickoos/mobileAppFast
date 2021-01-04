@@ -16,22 +16,6 @@ class MobileApp(App):
 
         self.root = Builder.load_file("src/applicationAppearance/mainScreen.kv")
 
-    def next_screen(self, screen_name: str):
-        """
-        Load the next screen.
-
-        :param screen_name: Name of the required screen.
-        :return: None.
-        """
-
-        screen_file_name = screen_name + ".kv"
-
-        Builder.unload_file(screen_file_name)
-        screen_now = Builder.load_file(screen_file_name)
-
-        self.root.container.clear_widgets()
-        self.root.container.add_widget(screen_now)
-
 
 class RootWidget(BoxLayout):
     container = ObjectProperty(None)
@@ -53,3 +37,21 @@ class RootWidget(BoxLayout):
 
         if type_of_user == Authorization.none_user:
             self.popup.open()
+        elif type_of_user == Authorization.admin_user:
+            self.next_screen("adminScreen")
+
+    def next_screen(self, screen_name: str):
+        """
+        Load the next screen.
+
+        :param screen_name: Name of the required screen.
+        :return: None.
+        """
+
+        screen_file_name = "src/applicationAppearance/" + screen_name + ".kv"
+
+        Builder.unload_file(screen_file_name)
+        screen_now = Builder.load_file(screen_file_name)
+
+        self.container.clear_widgets()
+        self.container.add_widget(screen_now)
