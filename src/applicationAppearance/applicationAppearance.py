@@ -7,7 +7,7 @@ from src.authorization import Authorization
 
 
 class MobileApp(App):
-    def build(self):
+    def build(self) -> None:
         """
         Builds home screen.
 
@@ -25,7 +25,7 @@ class RootWidget(BoxLayout):
     text_input_username = ObjectProperty(None)
     text_input_password = ObjectProperty(None)
 
-    def button_sign_in(self):
+    def button_sign_in(self) -> None:
         """
         "Login" button click handler.
 
@@ -40,7 +40,7 @@ class RootWidget(BoxLayout):
         elif type_of_user == Authorization.admin_user:
             self.next_screen("adminScreen")
 
-    def next_screen(self, screen_name: str):
+    def next_screen(self, screen_name: str) -> None:
         """
         Load the next screen.
 
@@ -55,3 +55,16 @@ class RootWidget(BoxLayout):
 
         self.container.clear_widgets()
         self.container.add_widget(screen_now)
+
+    def view_guests_list(self, date: str, name: str, phone: str) -> None:
+        """
+        Creates a guest list from buttons (collective farm, but how else?).
+
+        :param date: Date to search by.
+        :param name: The name to find.
+        :param phone: Phone to find.
+        :return: None.
+        """
+
+        # TODO реализуй нормальный список
+        pass

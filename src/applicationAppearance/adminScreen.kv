@@ -7,6 +7,34 @@ RootWidget:
         padding: 10
         spacing: 10
 
-        TextInput:
-            text: "Успех!"
-            readonly: True
+        BoxLayout:
+            size_hint_y: 0.12
+            orientation: "horizontal"
+            padding: 10
+            spacing: 10
+
+            GridLayout:
+                cols: 2
+                padding: 10
+                spacing: 10
+
+                Label:
+                    text: "Date:"
+
+                TextInput:
+                    multiline: False
+
+                Label:
+                    text: "Name:"
+
+                TextInput:
+                    multiline: False
+
+                Label:
+                    text: "Phone:"
+
+                TextInput:
+                    multiline: False
+
+            Button:
+                text: "Options"
