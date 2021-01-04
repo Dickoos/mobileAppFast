@@ -1,0 +1,27 @@
+RootWidget:
+    text_input_username: text_input_username
+
+    BoxLayout:
+        orientation: "vertical"
+
+        GridLayout:
+            cols: 2
+
+            Label:
+                text: "Username:"
+
+            TextInput:
+                id: text_input_username
+                multiline: False
+
+            Label:
+                text: "Password:"
+
+            TextInput:
+                password: True
+                multiline: False
+
+        Button:
+            size_hint_y: 0.12
+            text: "Sign in"
+            on_release: root.button_sign_in()
