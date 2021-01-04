@@ -34,12 +34,12 @@ class MobileApp(App):
 
 
 class RootWidget(BoxLayout):
+    container = ObjectProperty(None)
+
     popup = ObjectProperty(None)
 
     text_input_username = ObjectProperty(None)
     text_input_password = ObjectProperty(None)
-    # TODO Разберись, зачем этот контейнер
-    container = ObjectProperty(None)
 
     def button_sign_in(self):
         """

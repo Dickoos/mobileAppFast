@@ -1,18 +1,20 @@
 RootWidget:
+    container: container
+
     popup: popup
 
     text_input_username: text_input_username
     text_input_password: text_input_password
 
     BoxLayout:
-        id: main_layout
+        id: container
         orientation: "vertical"
 
         Popup:
             id: popup
             title: "Invalid username/password!"
             on_parent:
-                if self.parent == main_layout: self.parent.remove_widget(self)
+                if self.parent == container: self.parent.remove_widget(self)
 
             BoxLayout:
                 orientation: "vertical"
