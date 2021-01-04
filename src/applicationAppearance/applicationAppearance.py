@@ -44,4 +44,4 @@ class RootWidget(BoxLayout):
         """
 
         # TODO Нормальную проверку логина и пароля
-        self.text_input_username.text = "ХУи"
+        self.text_input_username.text = "Тестовый логин!"
