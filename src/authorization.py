@@ -3,7 +3,8 @@ class Authorization:
     admin_user = 1
     usual_user = 2
 
-    type_of_user_now = int()
+    # TODO нормальную работу с этой переменной
+    type_of_user_now = int()  # I know it's not a good idea, but there is no other one yet
 
     @staticmethod
     def check_user_pass(username: str, password: str) -> int:
