@@ -1,0 +1,19 @@
+RootWidget:
+    container: container
+
+    BoxLayout:
+        id: container
+        orientation: "vertical"
+        spacing: 10
+
+        Button:
+            text: "Add person to meeting"
+            on_release: root.next_screen("addPersonToMeeting")
+
+        Button:
+            text: "Remove person from meeting"
+            on_release: root.next_screen("removePersonFromMeeting")
+
+        Button:
+            text: "<- Back"
+            on_release: root.next_screen("screenWithGuestsList")

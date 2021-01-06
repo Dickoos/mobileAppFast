@@ -50,6 +50,9 @@ class RootWidget(BoxLayout):
         """
         Handling of pressing the option button (in order not to spoil the .kv file with an ugly if).
 
+        In some cases, you need to return to the standard user options screen (from the nested options).
+        This function also implements this moment.
+
         :return: None.
         """
 
