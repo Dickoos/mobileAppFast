@@ -6,40 +6,49 @@ RootWidget:
     BoxLayout:
         id: container
         orientation: "vertical"
-        padding: 10
+        padding: 5
         spacing: 10
 
         BoxLayout:
             size_hint_y: 0.4
             orientation: "horizontal"
-            padding: 10
+            padding: 5
             spacing: 10
 
-            GridLayout:
-                cols: 2
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 10
 
-                Label:
-                    text: "Date:"
+                GridLayout:
+                    cols: 2
+                    spacing: 10
 
-                TextInput:
-                    id: text_input_date
-                    multiline: False
+                    Label:
+                        size_hint_x: 0.1
+                        text: "Date:"
 
-                Label:
-                    text: "Name:"
+                    TextInput:
+                        id: text_input_date
+                        multiline: False
 
-                TextInput:
-                    id: text_input_name
-                    multiline: False
+                    Label:
+                        size_hint_x: 0.1
+                        text: "Name:"
 
-                Label:
-                    text: "Phone:"
+                    TextInput:
+                        id: text_input_name
+                        multiline: False
 
-                TextInput:
-                    id: text_input_phone
-                    multiline: False
+                    Label:
+                        size_hint_x: 0.1
+                        text: "Phone:"
+
+                    TextInput:
+                        id: text_input_phone
+                        multiline: False
 
                 Button:
+                    size_hint_y: 0.2
                     text: "Find"
                     on_release: root.view_guests_list(text_input_date, text_input_name, text_input_phone)
 
