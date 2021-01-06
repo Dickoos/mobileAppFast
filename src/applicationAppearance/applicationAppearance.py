@@ -27,6 +27,8 @@ class RootWidget(BoxLayout):
     # Login screen fields
     text_input_username = ObjectProperty(None)
     text_input_password = ObjectProperty(None)
+    # Fields of the main admin window
+    text_input_list_guests = ObjectProperty(None)
 
     def button_sign_in(self) -> None:
         """
@@ -42,6 +44,7 @@ class RootWidget(BoxLayout):
             self.popup_invalid_username_or_password.open()
         elif type_of_user == Authorization.admin_user:
             self.next_screen("adminScreen")
+            self.view_guests_list()
         elif type_of_user == Authorization.usual_user:
             # TODO Экран для обычного пользователя
             pass
@@ -62,7 +65,7 @@ class RootWidget(BoxLayout):
         self.container.clear_widgets()
         self.container.add_widget(screen_now)
 
-    def view_guests_list(self, date: str, name: str, phone: str) -> None:
+    def view_guests_list(self, date: str = '', name: str = '', phone: str = '') -> None:
         """
         Creates a guest list from buttons (collective farm, but how else?).
 
@@ -73,4 +76,7 @@ class RootWidget(BoxLayout):
         """
 
         # TODO реализуй нормальный список
-        pass
+        test_str_list = str()
+        for i in range(500):
+            test_str_list += (str(i) + " line test\n")
+        self.text_input_list_guests.text = test_str_list
