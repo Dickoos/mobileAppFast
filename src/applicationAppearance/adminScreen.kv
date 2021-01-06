@@ -22,23 +22,26 @@ RootWidget:
                     text: "Date:"
 
                 TextInput:
+                    id: text_input_date
                     multiline: False
 
                 Label:
                     text: "Name:"
 
                 TextInput:
+                    id: text_input_name
                     multiline: False
 
                 Label:
                     text: "Phone:"
 
                 TextInput:
+                    id: text_input_phone
                     multiline: False
 
                 Button:
                     text: "Find"
-                    on_release: root.view_guests_list()
+                    on_release: root.view_guests_list(text_input_date, text_input_name, text_input_phone)
 
             Button:
                 size_hint_x: 0.2
@@ -52,3 +55,4 @@ RootWidget:
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
+                on_parent: root.view_guests_list()
