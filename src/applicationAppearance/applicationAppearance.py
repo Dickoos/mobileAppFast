@@ -39,6 +39,9 @@ class RootWidget(BoxLayout):
             self.popup.open()
         elif type_of_user == Authorization.admin_user:
             self.next_screen("adminScreen")
+        elif type_of_user == Authorization.usual_user:
+            # TODO Экран для обычного пользователя
+            pass
 
     def next_screen(self, screen_name: str) -> None:
         """

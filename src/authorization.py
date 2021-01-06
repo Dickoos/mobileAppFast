@@ -14,7 +14,6 @@ class Authorization:
         """
 
         # TODO Проверка на сервере
-
         true_admin_user = "admin"
         true_admin_pass = "admin"
         true_usual_user = "usual"
