@@ -15,9 +15,6 @@ RootWidget:
             on_release: root.next_screen("addPersonToMeeting")
 
         Button:
-            text: "Change guest details"
-
-        Button:
             text: "Remove person from the database"
 
         Button:
@@ -25,4 +22,4 @@ RootWidget:
 
         Button:
             text: "<- Back"
-            on_release: root.next_screen("adminScreen")
+            on_release: root.next_screen("screenWithGuestsList")

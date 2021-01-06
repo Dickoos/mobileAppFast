@@ -3,6 +3,8 @@ class Authorization:
     admin_user = 1
     usual_user = 2
 
+    type_of_user_now = int()
+
     @staticmethod
     def check_user_pass(username: str, password: str) -> int:
         """

@@ -39,15 +39,24 @@ class RootWidget(BoxLayout):
         """
 
         # TODO Нормальную проверку логина и пароля
-        type_of_user = Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text)
+        Authorization.type_of_user_now = Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text)
 
-        if type_of_user == Authorization.none_user:
+        if Authorization.type_of_user_now == Authorization.none_user:
             self.popup_invalid_username_or_password.open()
-        elif type_of_user == Authorization.admin_user:
-            self.next_screen("adminScreen")
-        elif type_of_user == Authorization.usual_user:
-            # TODO Экран для обычного пользователя
-            pass
+        else:
+            self.next_screen("screenWithGuestsList")
+
+    def button_options(self) -> None:
+        """
+        Handling of pressing the option button (in order not to spoil the .kv file with an ugly if).
+
+        :return: None.
+        """
+
+        if Authorization.type_of_user_now == Authorization.admin_user:
+            self.next_screen("adminSettingsScreen")
+        else:
+            self.next_screen("usualSettingsScreen")
 
     def next_screen(self, screen_name: str) -> None:
         """
