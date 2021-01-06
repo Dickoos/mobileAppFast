@@ -44,7 +44,8 @@ class RootWidget(BoxLayout):
             self.popup_invalid_username_or_password.open()
         elif type_of_user == Authorization.admin_user:
             self.next_screen("adminScreen")
-            self.view_guests_list()
+            # TODO Почини  вызов нижней функции
+            # self.view_guests_list()
         elif type_of_user == Authorization.usual_user:
             # TODO Экран для обычного пользователя
             pass

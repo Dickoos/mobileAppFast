@@ -38,12 +38,17 @@ RootWidget:
 
                 Button:
                     text: "Find"
+                    on_release: root.view_guests_list()
 
             Button:
                 size_hint_x: 0.2
                 text: "Options"
 
-        TextInput:
-            id: text_input_list_guests
-            multiline: True
-            readonly: True
+        ScrollView:
+            id: scroll_view
+            TextInput:
+                id: text_input_list_guests
+                multiline: True
+                readonly: True
+                size_hint: 1, None
+                height: max(self.minimum_height, scroll_view.height)
