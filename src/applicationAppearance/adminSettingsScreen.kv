@@ -4,12 +4,17 @@ RootWidget:
     BoxLayout:
         id: container
         orientation: "vertical"
+        spacing: 10
 
         Button:
             text: "Add person to the database"
+            on_release: root.next_screen("addPersonToDB")
 
         Button:
             text: "Add person to meeting"
+
+        Button:
+            text: "Change guest details"
 
         Button:
             text: "Remove person from the database"

@@ -1,0 +1,41 @@
+RootWidget:
+    container: container
+
+    BoxLayout:
+        id: container
+        orientation: "vertical"
+        spacing: 10
+
+        GridLayout:
+            cols: 2
+            spacing: 10
+
+            Label:
+                size_hint_x: 0.1
+                text: "Name:"
+
+            TextInput:
+                multiline: False
+
+            Label:
+                size_hint_x: 0.1
+                text: "Phone:"
+
+            TextInput:
+                multiline: False
+
+            Label:
+                size_hint_x: 0.1
+                text: "Email:"
+
+            TextInput:
+                multiline: False
+
+        Button:
+            size_hint_y: 0.2
+            text: "Write to database"
+
+        Button:
+            size_hint_y: 0.2
+            text: "<- Back"
+            on_release: root.next_screen("adminSettingsScreen")
