@@ -1,0 +1,22 @@
+RootWidget:
+    container: container
+
+    BoxLayout:
+        id: container
+        orientation: "vertical"
+
+        Button:
+            text: "Add person to the database"
+
+        Button:
+            text: "Add person to meeting"
+
+        Button:
+            text: "Remove person from the database"
+
+        Button:
+            text: "Remove person from meeting"
+
+        Button:
+            text: "<- Back"
+            on_release: root.next_screen("adminScreen")

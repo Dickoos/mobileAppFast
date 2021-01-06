@@ -14,6 +14,7 @@ class MobileApp(App):
         :return: None.
         """
 
+        self.title = "Monitoring event attendance"
         self.root = Builder.load_file("src/applicationAppearance/mainScreen.kv")
 
 

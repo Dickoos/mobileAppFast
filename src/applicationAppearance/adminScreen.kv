@@ -6,8 +6,6 @@ RootWidget:
     BoxLayout:
         id: container
         orientation: "vertical"
-        padding: 5
-        spacing: 10
 
         BoxLayout:
             size_hint_y: 0.4
@@ -55,6 +53,7 @@ RootWidget:
             Button:
                 size_hint_x: 0.2
                 text: "Options"
+                on_release: root.next_screen("adminSettingsScreen")
 
         ScrollView:
             id: scroll_view
