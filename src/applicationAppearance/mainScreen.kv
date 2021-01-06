@@ -1,7 +1,7 @@
 RootWidget:
     container: container
 
-    popup: popup
+    popup_invalid_username_or_password: popup_invalid_username_or_password
 
     text_input_username: text_input_username
     text_input_password: text_input_password
@@ -13,7 +13,7 @@ RootWidget:
         spacing: 10
 
         Popup:
-            id: popup
+            id: popup_invalid_username_or_password
             title: "Invalid username/password!"
             on_parent:
                 if self.parent == container: self.parent.remove_widget(self)
@@ -30,7 +30,7 @@ RootWidget:
                 Button:
                     size_hint_y: 0.12
                     text: "Press to dismiss"
-                    on_release: popup.dismiss()
+                    on_release: popup_invalid_username_or_password.dismiss()
 
         GridLayout:
             cols: 2

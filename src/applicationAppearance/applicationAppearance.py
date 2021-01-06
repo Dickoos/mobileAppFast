@@ -18,10 +18,13 @@ class MobileApp(App):
 
 
 class RootWidget(BoxLayout):
+    # Screen container
     container = ObjectProperty(None)
 
-    popup = ObjectProperty(None)
+    # Pop-up message on login screen
+    popup_invalid_username_or_password = ObjectProperty(None)
 
+    # Login screen fields
     text_input_username = ObjectProperty(None)
     text_input_password = ObjectProperty(None)
 
@@ -36,7 +39,7 @@ class RootWidget(BoxLayout):
         type_of_user = Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text)
 
         if type_of_user == Authorization.none_user:
-            self.popup.open()
+            self.popup_invalid_username_or_password.open()
         elif type_of_user == Authorization.admin_user:
             self.next_screen("adminScreen")
         elif type_of_user == Authorization.usual_user:
