@@ -3,7 +3,7 @@ from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
-from src.authorization import Authorization
+from src.workWithDB import DB
 
 
 class MobileApp(App):
@@ -19,6 +19,10 @@ class MobileApp(App):
 
 
 class RootWidget(BoxLayout):
+    # Variable for working with db
+    db = DB("test", "pi", "23514317", "192.168.1.69")
+    db.user_table_name = "users"
+
     # Screen container
     container = ObjectProperty(None)
 
@@ -38,10 +42,9 @@ class RootWidget(BoxLayout):
         :return: None.
         """
 
-        # TODO Нормальную проверку логина и пароля
-        Authorization.type_of_user_now = Authorization.check_user_pass(self.text_input_username.text, self.text_input_password.text)
+        self.db.type_of_user_now = self.db.check_user_pass(self.text_input_username.text, self.text_input_password.text)
 
-        if Authorization.type_of_user_now == Authorization.none_user:
+        if self.db.type_of_user_now == self.db.none_user:
             self.popup_invalid_username_or_password.open()
         else:
             self.next_screen("screenWithGuestsList")
@@ -56,7 +59,7 @@ class RootWidget(BoxLayout):
         :return: None.
         """
 
-        if Authorization.type_of_user_now == Authorization.admin_user:
+        if self.db.type_of_user_now == self.db.admin_user:
             self.next_screen("adminSettingsScreen")
         else:
             self.next_screen("usualSettingsScreen")
