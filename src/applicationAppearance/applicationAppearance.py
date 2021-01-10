@@ -22,27 +22,33 @@ class RootWidget(BoxLayout):
     # Variable for working with db
     db = DB("test", "pi", "23514317", "192.168.1.69")
     db.user_table_name = "users"
+    db.guests_table_name = "guests"
 
     # Screen container
     container = ObjectProperty(None)
 
     # Pop-up message on login screen
     popup_invalid_username_or_password = ObjectProperty(None)
+    # Pop-up message on add person to db screen
+    popup_invalid_data = ObjectProperty(None)
 
-    # Login screen fields
-    text_input_username = ObjectProperty(None)
-    text_input_password = ObjectProperty(None)
     # Fields of the main admin window
     text_input_list_guests = ObjectProperty(None)
+    # Fields of the add person to db screen
+    text_input_name = ObjectProperty(None)
+    text_input_phone = ObjectProperty(None)
+    text_input_email = ObjectProperty(None)
 
-    def button_sign_in(self) -> None:
+    def button_sign_in(self, login: str, password: str) -> None:
         """
         "Login" button click handler.
 
+        :param login: User login from the corresponding field.
+        :param password: User password from the corresponding field.
         :return: None.
         """
 
-        self.db.type_of_user_now = self.db.check_user_pass(self.text_input_username.text, self.text_input_password.text)
+        self.db.type_of_user_now = self.db.check_user_pass(login, password)
 
         if self.db.type_of_user_now == self.db.none_user:
             self.popup_invalid_username_or_password.open()
@@ -63,6 +69,35 @@ class RootWidget(BoxLayout):
             self.next_screen("adminSettingsScreen")
         else:
             self.next_screen("usualSettingsScreen")
+
+    def button_add_person_to_db(self) -> None:
+        """
+        Handling a button click to add a person to the database.
+
+        :return: None.
+        """
+
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+            return
+
+        if self.db.add_person_to_db(self.text_input_name.text, self.text_input_phone.text, self.text_input_email.text):
+            self.text_input_name.text = ''
+            self.text_input_phone.text = ''
+            self.text_input_email.text = ''
+        else:
+            self.popup_invalid_data.open()
+
+    @staticmethod
+    def check_correct_phone(phone: str) -> bool:
+        """
+        Checking the correctness of the number.
+
+        :param phone: The number to be checked.
+        :return: Either the number is correct or not.
+        """
+
+        return len(phone) == 11 or (len(phone) == 12 and phone[0] == '+')
 
     def next_screen(self, screen_name: str) -> None:
         """

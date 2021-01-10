@@ -3,9 +3,6 @@ RootWidget:
 
     popup_invalid_username_or_password: popup_invalid_username_or_password
 
-    text_input_username: text_input_username
-    text_input_password: text_input_password
-
     BoxLayout:
         id: container
         orientation: "vertical"
@@ -55,4 +52,4 @@ RootWidget:
         Button:
             size_hint_y: 0.12
             text: "Sign in"
-            on_release: root.button_sign_in()
+            on_release: root.button_sign_in(text_input_username.text, text_input_password.text)
