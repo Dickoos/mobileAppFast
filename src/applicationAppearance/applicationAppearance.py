@@ -23,21 +23,24 @@ class RootWidget(BoxLayout):
     db = DB("test", "pi", "23514317", "192.168.1.69")
     db.user_table_name = "users"
     db.guests_table_name = "guests"
+    db.meetings_table_name = "meetings"
 
     # Screen container
     container = ObjectProperty(None)
 
     # Pop-up message on login screen
     popup_invalid_username_or_password = ObjectProperty(None)
-    # Pop-up message on add person to db screen
+    # Pop-up message on add person
     popup_invalid_data = ObjectProperty(None)
 
     # Fields of the main admin window
     text_input_list_guests = ObjectProperty(None)
-    # Fields of the add person to db screen
+    # Fields of the add person
     text_input_name = ObjectProperty(None)
     text_input_phone = ObjectProperty(None)
     text_input_email = ObjectProperty(None)
+    text_input_date = ObjectProperty(None)
+    text_input_list = ObjectProperty(None)
 
     def button_sign_in(self, login: str, password: str) -> None:
         """
@@ -79,12 +82,35 @@ class RootWidget(BoxLayout):
 
         if not self.check_correct_phone(self.text_input_phone.text):
             self.text_input_phone.text = "Invalid number"
+
             return
 
         if self.db.add_person_to_db(self.text_input_name.text, self.text_input_phone.text, self.text_input_email.text):
             self.text_input_name.text = ''
             self.text_input_phone.text = ''
             self.text_input_email.text = ''
+        else:
+            self.popup_invalid_data.open()
+
+    def button_add_person_to_meeting(self) -> None:
+        """
+        Handling a key press for adding a person to a meeting.
+
+        :return: None.
+        """
+
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+
+            return
+        if not self.check_correct_date(self.text_input_date.text):
+            self.text_input_date.text = "Invalid date"
+
+            return
+
+        if self.db.add_person_to_meeting(self.text_input_phone.text, self.text_input_date.text):
+            self.text_input_phone.text = ''
+            self.text_input_date.text = ''
         else:
             self.popup_invalid_data.open()
 
@@ -98,6 +124,45 @@ class RootWidget(BoxLayout):
         """
 
         return len(phone) == 11 or (len(phone) == 12 and phone[0] == '+')
+
+    @staticmethod
+    def check_correct_date(date: str) -> bool:
+        """
+        Checks if the date is entered correctly.
+
+        :param date: The date to check.
+        :return: The date is entered correctly.
+        """
+
+        try:
+            day, month, year = map(int, date.split('.'))
+        except ValueError:
+            return False
+        day_str, month_str, year_str = date.split('.')
+
+        if day < 1 or day > 31 or len(day_str) != 2:
+            return False
+        if month < 1 or month > 12 or len(month_str) != 2:
+            return False
+        if year < 1000 or len(year_str) < 4:
+            return False
+
+        return True
+
+    def button_find_in_add_person_to_meeting(self, name: str = '', phone: str = '') -> None:
+        """
+        Handles a click on the search button on the add guest to meeting screen.
+
+        :param name: The name to search by.
+        :param phone: The phone number to search for.
+        :return: None.
+        """
+
+        temp_list = self.db.get_name_phone_from_guests(name, phone)
+        self.text_input_list.text = str()
+
+        for line in temp_list:
+            self.text_input_list.text += ' '.join(line) + '\n'
 
     def next_screen(self, screen_name: str) -> None:
         """

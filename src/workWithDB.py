@@ -11,6 +11,7 @@ class DB:
 
     user_table_name = str()
     guests_table_name = str()
+    meetings_table_name = str()
 
     # So far I have not figured out how to store the user type at the moment ((((
     none_user = 0
@@ -80,6 +81,62 @@ class DB:
             return False
 
         return True
+
+    def add_person_to_meeting(self, phone: str, date: str) -> bool:
+        """
+        Allows you to add a guest to the meeting.
+
+        :param phone: Guest phone number (recording is possible only if the guest is in the database).
+        :param date: Date of the event (in the format day.month.year).
+        :return: Whether the recording was successful.
+        """
+
+        if phone == '' or date == '':
+            return False
+
+        query = "insert into {} values (%s, %s)".format(self.meetings_table_name)
+        values = (phone, date)
+
+        try:
+            self.cursor.execute(query, values)
+            self.connection.commit()
+        except psycopg2.errors.UniqueViolation:
+            self.connection.commit()
+
+            return False
+        except psycopg2.errors.ForeignKeyViolation:
+            self.connection.commit()
+
+            return False
+
+        return True
+
+    def get_name_phone_from_guests(self, name: str, phone: str) -> list:
+        """
+        Returns the list of guest - phone number.
+
+        :param name: The name by which to search.
+        :param phone: The phone number to search for.
+        :return: A list of names and phone numbers.
+        """
+
+        query = "select name, phone from {}".format(self.guests_table_name)
+        if name != '' and phone != '':
+            query += " where name = %s and phone = %s"
+            values = (name, phone)
+        elif name != '':
+            query += " where name = %s"
+            values = (name, )
+        elif phone != '':
+            query += " where phone = %s"
+            values = (phone, )
+        else:
+            values = ()
+
+        print(query, values)
+        self.cursor.execute(query, values)
+
+        return self.cursor.fetchall()
 
     def __del__(self):
         """
