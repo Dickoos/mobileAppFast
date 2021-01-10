@@ -197,6 +197,18 @@ class RootWidget(BoxLayout):
 
         self.button_find_in_add_person_to_meeting(self.name_text.text, self.phone_text.text)
 
+    def button_delete_user_from_db(self) -> None:
+        """
+        Handling pressing the button to remove a user from the database.
+
+        :return: None.
+        """
+
+        self.db.delete_user_from_db(self.text_input_phone.text)
+        self.text_input_phone.text = ''
+
+        self.button_find_users(self.name_text.text, self.phone_text.text)
+
     def button_delete_person_from_meeting(self) -> None:
         """
         Handling a button to remove a person from a meeting.
@@ -220,6 +232,21 @@ class RootWidget(BoxLayout):
         """
 
         temp_list = self.db.get_name_phone_from_guests(name, phone)
+        self.text_input_list.text = str()
+
+        for line in temp_list:
+            self.text_input_list.text += ' '.join(line) + '\n'
+
+    def button_find_users(self, name: str = '', phone: str = '') -> None:
+        """
+        Handles a click on the search button on the add guest to meeting screen.
+
+        :param name: The name to search by.
+        :param phone: The phone number to search for.
+        :return: None.
+        """
+
+        temp_list = self.db.get_name_phone_from_users(name, phone)
         self.text_input_list.text = str()
 
         for line in temp_list:

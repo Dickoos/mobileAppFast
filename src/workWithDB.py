@@ -167,6 +167,33 @@ class DB:
 
         return self.cursor.fetchall()
 
+    def get_name_phone_from_users(self, name: str, phone: str) -> list:
+        """
+        Returns the list of users - phone number.
+
+        :param name: The name by which to search.
+        :param phone: The phone number to search for.
+        :return: A list of names and phone numbers.
+        """
+
+        query = "select name, phone from {}".format(self.user_table_name)
+        values = list()
+
+        if name != '':
+            query += " where name = %s"
+            values.append(name)
+        if phone != '':
+            if query[-2] != '%':
+                query += " where phone = %s"
+            else:
+                query += " and phone = %s"
+
+            values.append(phone)
+
+        self.cursor.execute(query, values)
+
+        return self.cursor.fetchall()
+
     def get_list_of_guests_on_meetings(self, date: str, name: str, phone: str) -> list:
         """
         Returns a list of guests.
@@ -208,6 +235,20 @@ class DB:
             self.meetings_table_name, self.guests_table_name
         )
         values = {"phone": phone}
+
+        self.cursor.execute(query, values)
+        self.connection.commit()
+
+    def delete_user_from_db(self, phone: str) -> None:
+        """
+        Removing a user from the database.
+
+        :param phone: User number to be deleted.
+        :return: None.
+        """
+
+        query = "delete from {} where phone = %s".format(self.user_table_name)
+        values = (phone, )
 
         self.cursor.execute(query, values)
         self.connection.commit()
