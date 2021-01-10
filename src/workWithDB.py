@@ -167,6 +167,22 @@ class DB:
 
         return self.cursor.fetchall()
 
+    def delete_person_from_db(self, phone: str) -> None:
+        """
+        Removes a person from the database (along with appointments).
+
+        :param phone: The phone number of the person to be deleted.
+        :return: None.
+        """
+
+        query = "delete from {0} where phone = %(phone)s; delete from {1} where phone = %(phone)s;".format(
+            self.meetings_table_name, self.guests_table_name
+        )
+        values = {"phone": phone}
+
+        self.cursor.execute(query, values)
+        self.connection.commit()
+
     def __del__(self):
         """
         Garbage removal - database connection and cursor.

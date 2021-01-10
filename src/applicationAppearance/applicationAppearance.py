@@ -42,6 +42,45 @@ class RootWidget(BoxLayout):
     text_input_date = ObjectProperty(None)
     text_input_list = ObjectProperty(None)
 
+    # Variables to automatically update the list on some screens
+    name_text = ObjectProperty(None)
+    phone_text = ObjectProperty(None)
+
+    @staticmethod
+    def check_correct_phone(phone: str) -> bool:
+        """
+        Checking the correctness of the number.
+
+        :param phone: The number to be checked.
+        :return: Either the number is correct or not.
+        """
+
+        return len(phone) == 11 or (len(phone) == 12 and phone[0] == '+')
+
+    @staticmethod
+    def check_correct_date(date: str) -> bool:
+        """
+        Checks if the date is entered correctly.
+
+        :param date: The date to check.
+        :return: The date is entered correctly.
+        """
+
+        try:
+            day, month, year = map(int, date.split('.'))
+        except ValueError:
+            return False
+        day_str, month_str, year_str = date.split('.')
+
+        if day < 1 or day > 31 or len(day_str) != 2:
+            return False
+        if month < 1 or month > 12 or len(month_str) != 2:
+            return False
+        if year < 1000 or len(year_str) < 4:
+            return False
+
+        return True
+
     def button_sign_in(self, login: str, password: str) -> None:
         """
         "Login" button click handler.
@@ -114,40 +153,17 @@ class RootWidget(BoxLayout):
         else:
             self.popup_invalid_data.open()
 
-    @staticmethod
-    def check_correct_phone(phone: str) -> bool:
+    def button_delete_person_from_db(self) -> None:
         """
-        Checking the correctness of the number.
+        handler for pressing the button to delete a person from the database.
 
-        :param phone: The number to be checked.
-        :return: Either the number is correct or not.
+        :return: None.
         """
 
-        return len(phone) == 11 or (len(phone) == 12 and phone[0] == '+')
+        self.db.delete_person_from_db(self.text_input_phone.text)
+        self.text_input_phone.text = ''
 
-    @staticmethod
-    def check_correct_date(date: str) -> bool:
-        """
-        Checks if the date is entered correctly.
-
-        :param date: The date to check.
-        :return: The date is entered correctly.
-        """
-
-        try:
-            day, month, year = map(int, date.split('.'))
-        except ValueError:
-            return False
-        day_str, month_str, year_str = date.split('.')
-
-        if day < 1 or day > 31 or len(day_str) != 2:
-            return False
-        if month < 1 or month > 12 or len(month_str) != 2:
-            return False
-        if year < 1000 or len(year_str) < 4:
-            return False
-
-        return True
+        self.button_find_in_add_person_to_meeting(self.name_text.text, self.phone_text.text)
 
     def button_find_in_add_person_to_meeting(self, name: str = '', phone: str = '') -> None:
         """
