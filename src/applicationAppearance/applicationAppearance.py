@@ -190,8 +190,8 @@ class RootWidget(BoxLayout):
         :return: None.
         """
 
-        # TODO реализуй нормальный список
-        test_str_list = str()
-        for i in range(500):
-            test_str_list += (str(i) + " line test\n")
-        self.text_input_list_guests.text = test_str_list
+        temp_list = self.db.get_list_of_guests_on_meetings(date, name, phone)
+        self.text_input_list_guests.text = str()
+
+        for line in sorted(temp_list):
+            self.text_input_list_guests.text += ' '.join(line) + '\n'

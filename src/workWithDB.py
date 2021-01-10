@@ -134,13 +134,38 @@ class DB:
 
             values.append(phone)
 
-        print(query, values)
         self.cursor.execute(query, values)
 
         return self.cursor.fetchall()
 
-    # def get_list_of_guests_on_meetings(self, date: str, name: str, phone: str) -> list:
-    #     pass
+    def get_list_of_guests_on_meetings(self, date: str, name: str, phone: str) -> list:
+        """
+        Returns a list of guests.
+
+        :param date: The date by which the search is required.
+        :param name: The name by which to search.
+        :param phone: The phone number to search for.
+        :return: Guest list (date - name - phone number).
+        """
+
+        query = "select date, name, {0}.phone from {0}, {1} where {1}.phone = {0}.phone".format(
+            self.guests_table_name, self.meetings_table_name
+        )
+        values = list()
+
+        if date != '':
+            query += " and date = %s"
+            values.append(date)
+        if name != '':
+            query += " and name = %s"
+            values.append(name)
+        if phone != '':
+            query += " and {}.phone = %s".format(self.guests_table_name)
+            values.append(phone)
+
+        self.cursor.execute(query, values)
+
+        return self.cursor.fetchall()
 
     def __del__(self):
         """
