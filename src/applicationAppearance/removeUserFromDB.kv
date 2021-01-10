@@ -4,8 +4,8 @@ RootWidget:
     text_input_phone: text_input_phone
     text_input_list: text_input_list
 
-    name_text: name_text
-    phone_text: phone_text
+    text_input_name_help: text_input_name_help
+    text_input_phone_help: text_input_phone_help
 
     BoxLayout:
         id: container
@@ -32,7 +32,7 @@ RootWidget:
             Button:
                 size_hint_y: 0.5
                 text: "Remove user from database"
-                on_release: root.button_delete_user_from_db()
+                on_release: root.delete_user_from_db()
 
         GridLayout:
             cols: 2
@@ -43,7 +43,7 @@ RootWidget:
                 text: "Name:"
 
             TextInput:
-                id: name_text
+                id: text_input_name_help
                 multiline: False
 
             Label:
@@ -51,13 +51,13 @@ RootWidget:
                 text: "Phone:"
 
             TextInput:
-                id: phone_text
+                id: text_input_phone_help
                 multiline: False
 
         Button:
             size_hint_y: 0.2
             text: "Find"
-            on_release: root.button_find_users(name_text.text, phone_text.text)
+            on_release: root.show_list_of_all_guests_or_users("users", text_input_name_help.text, text_input_phone_help.text)
 
         ScrollView:
             id: scroll_view
@@ -68,7 +68,7 @@ RootWidget:
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
-                on_parent: root.button_find_users()
+                on_parent: root.show_list_of_all_guests_or_users("users")
 
         Button:
             size_hint_y: 0.2

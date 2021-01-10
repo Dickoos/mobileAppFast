@@ -24,7 +24,7 @@ RootWidget:
                 spacing: 10
 
                 TextInput:
-                    text: "Wrong data.\nPossible reasons:\n1. Not all fields are filled in.\n2. Similar data is already in the database.\n3. Errors on the server.\n4. The phone number is not in the database."
+                    text: "Wrong data.\nPossible reasons:\n1. Similar data is already in the database.\n2. Errors on the server.\n3. The phone number is not in the database."
                     readonly: True
 
                 Button:
@@ -59,7 +59,7 @@ RootWidget:
             Button:
                 size_hint_y: 0.2
                 text: "Add person to meeting"
-                on_release: root.button_add_person_to_meeting()
+                on_release: root.add_guest_to_meeting()
 
         GridLayout:
             cols: 2
@@ -70,7 +70,7 @@ RootWidget:
                 text: "Name:"
 
             TextInput:
-                id: name_text
+                id: text_input_name_help
                 multiline: False
 
             Label:
@@ -78,13 +78,13 @@ RootWidget:
                 text: "Phone:"
 
             TextInput:
-                id: phone_text
+                id: text_input_phone_help
                 multiline: False
 
         Button:
             size_hint_y: 0.2
             text: "Find"
-            on_release: root.button_find_in_add_person_to_meeting(name_text.text, phone_text.text)
+            on_release: root.show_list_of_all_guests_or_users("guests", text_input_name_help.text, text_input_phone_help.text)
 
         ScrollView:
             id: scroll_view
@@ -95,9 +95,9 @@ RootWidget:
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
-                on_parent: root.button_find_in_add_person_to_meeting()
+                on_parent: root.show_list_of_all_guests_or_users("guests")
 
         Button:
             size_hint_y: 0.2
             text: "<- Back"
-            on_release: root.button_options()
+            on_release: root.options()

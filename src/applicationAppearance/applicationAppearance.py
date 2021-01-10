@@ -21,21 +21,17 @@ class MobileApp(App):
 class RootWidget(BoxLayout):
     # Variable for working with db
     db = DB("test", "pi", "23514317", "192.168.1.69")
-    db.user_table_name = "users"
+    db.users_table_name = "users"
     db.guests_table_name = "guests"
     db.meetings_table_name = "meetings"
 
     # Screen container
     container = ObjectProperty(None)
 
-    # Pop-up message on login screen
-    popup_invalid_username_or_password = ObjectProperty(None)
-    # Pop-up message on add person
+    # Pop-up message
     popup_invalid_data = ObjectProperty(None)
 
-    # Fields of the main admin window
-    text_input_list_guests = ObjectProperty(None)
-    # Fields of the add person
+    # Fields
     text_input_name = ObjectProperty(None)
     text_input_phone = ObjectProperty(None)
     text_input_email = ObjectProperty(None)
@@ -46,34 +42,35 @@ class RootWidget(BoxLayout):
     text_input_user_type = ObjectProperty(None)
 
     # Variables to automatically update the list on some screens
-    date_text = ObjectProperty(None)
-    name_text = ObjectProperty(None)
-    phone_text = ObjectProperty(None)
+    text_input_date_help = ObjectProperty(None)
+    text_input_name_help = ObjectProperty(None)
+    text_input_phone_help = ObjectProperty(None)
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
         """
-        Checking the correctness of the number.
+        Checking the correctness of phone number.
 
-        :param phone: The number to be checked.
-        :return: Either the number is correct or not.
+        :param phone: Phone number to be checked.
+        :return: Is phone number correct.
         """
 
-        return len(phone) == 11 or (len(phone) == 12 and phone[0] == '+')
+        return len(phone) == 11
 
     @staticmethod
     def check_correct_date(date: str) -> bool:
         """
-        Checks if the date is entered correctly.
+        Checks if date is entered correctly.
 
-        :param date: The date to check.
-        :return: The date is entered correctly.
+        :param date: Date to check.
+        :return: Date is entered correctly.
         """
 
         try:
             day, month, year = map(int, date.split('.'))
         except ValueError:
             return False
+
         day_str, month_str, year_str = date.split('.')
 
         if day < 1 or day > 31 or len(day_str) != 2:
@@ -85,25 +82,25 @@ class RootWidget(BoxLayout):
 
         return True
 
-    def button_sign_in(self, login: str, password: str) -> None:
+    def login_in(self, login: str, password: str) -> None:
         """
-        "Login" button click handler.
+        Trying to login in.
 
-        :param login: User login from the corresponding field.
-        :param password: User password from the corresponding field.
+        :param login: User login from corresponding field.
+        :param password: User password from corresponding field.
         :return: None.
         """
 
-        self.db.type_of_user_now = self.db.check_user_pass(login, password)
+        self.db.type_of_user_now = self.db.login_in(login, password)
 
         if self.db.type_of_user_now == self.db.none_user:
-            self.popup_invalid_username_or_password.open()
+            self.popup_invalid_data.open()
         else:
             self.next_screen("screenWithGuestsList")
 
-    def button_options(self) -> None:
+    def options(self) -> None:
         """
-        Handling of pressing the option button (in order not to spoil the .kv file with an ugly if).
+        Clicking on the options button.
 
         In some cases, you need to return to the standard user options screen (from the nested options).
         This function also implements this moment.
@@ -116,39 +113,54 @@ class RootWidget(BoxLayout):
         else:
             self.next_screen("usualSettingsScreen")
 
-    def button_add_person_to_db(self) -> None:
+    def add_guest_to_db(self) -> None:
         """
-        Handling a button click to add a person to the database.
+        Adding a guest to database.
 
         :return: None.
         """
 
         if not self.check_correct_phone(self.text_input_phone.text):
             self.text_input_phone.text = "Invalid number"
-
+            return
+        if self.text_input_name.text == '':
+            self.text_input_name.text = "EMPTY FIELD"
+            return
+        if self.text_input_email.text == '':
+            self.text_input_email.text = "EMPTY FIELD"
             return
 
-        if self.db.add_person_to_db(self.text_input_name.text, self.text_input_phone.text, self.text_input_email.text):
+        if self.db.add_guest_to_db(self.text_input_name.text, self.text_input_phone.text, self.text_input_email.text):
             self.text_input_name.text = ''
             self.text_input_phone.text = ''
             self.text_input_email.text = ''
         else:
             self.popup_invalid_data.open()
 
-    def button_add_user_to_db(self) -> None:
+    def add_user_to_db(self) -> None:
         """
-        Processing the button for adding a user to the database.
+        Adding a user to database.
 
         :return: None.
         """
 
         if not self.check_correct_phone(self.text_input_phone.text):
             self.text_input_phone.text = "Invalid number"
-
             return
-        if '1' < self.text_input_user_type.text > '2':
+        if self.text_input_user_type.text != '1' and self.text_input_user_type.text != '2':
             self.text_input_user_type.text = "Invalid type"
-
+            return
+        if self.text_input_name.text == '':
+            self.text_input_name.text = "EMPTY FIELD"
+            return
+        if self.text_input_login.text == '':
+            self.text_input_login.text = "EMPTY FIELD"
+            return
+        if self.text_input_password.text == '':
+            self.text_input_password.text = "EMPTY FIELD"
+            return
+        if self.text_input_email.text == '':
+            self.text_input_email.text = "EMPTY FIELD"
             return
 
         if self.db.add_user_to_db(self.text_input_name.text, self.text_input_login.text,
@@ -163,93 +175,112 @@ class RootWidget(BoxLayout):
         else:
             self.popup_invalid_data.open()
 
-    def button_add_person_to_meeting(self) -> None:
+    def add_guest_to_meeting(self) -> None:
         """
-        Handling a key press for adding a person to a meeting.
+        Adding a guest to meeting.
 
         :return: None.
         """
 
         if not self.check_correct_phone(self.text_input_phone.text):
             self.text_input_phone.text = "Invalid number"
-
             return
         if not self.check_correct_date(self.text_input_date.text):
             self.text_input_date.text = "Invalid date"
-
             return
 
-        if self.db.add_person_to_meeting(self.text_input_phone.text, self.text_input_date.text):
+        if self.db.add_guest_to_meeting(self.text_input_phone.text, self.text_input_date.text):
             self.text_input_phone.text = ''
             self.text_input_date.text = ''
         else:
             self.popup_invalid_data.open()
 
-    def button_delete_person_from_db(self) -> None:
+    def delete_guest_from_db(self) -> None:
         """
-        Handler for pressing the button to delete a person from the database.
+        Delete guest from database.
 
         :return: None.
         """
 
-        self.db.delete_person_from_db(self.text_input_phone.text)
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+            return
+
+        self.db.delete_guest_from_db(self.text_input_phone.text)
         self.text_input_phone.text = ''
 
-        self.button_find_in_add_person_to_meeting(self.name_text.text, self.phone_text.text)
+        self.show_list_of_all_guests_or_users(
+            self.db.guests_table_name, self.text_input_name_help.text, self.text_input_phone_help.text
+        )
 
-    def button_delete_user_from_db(self) -> None:
+    def delete_user_from_db(self) -> None:
         """
-        Handling pressing the button to remove a user from the database.
+        Delete user from database.
 
         :return: None.
         """
+
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+            return
 
         self.db.delete_user_from_db(self.text_input_phone.text)
         self.text_input_phone.text = ''
 
-        self.button_find_users(self.name_text.text, self.phone_text.text)
+        self.show_list_of_all_guests_or_users(self.db.users_table_name, self.text_input_name_help.text, self.text_input_phone_help.text)
 
-    def button_delete_person_from_meeting(self) -> None:
+    def delete_guest_from_meeting(self) -> None:
         """
-        Handling a button to remove a person from a meeting.
+        Delete guest from meeting.
 
         :return: None.
         """
 
-        self.db.delete_person_from_meeting(self.text_input_phone.text, self.text_input_date.text)
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+            return
+        if not self.check_correct_date(self.text_input_date.text):
+            self.text_input_date.text = "Invalid date"
+            return
+
+        self.db.delete_guest_from_meeting(self.text_input_phone.text, self.text_input_date.text)
         self.text_input_phone.text = ''
-        self.text_input_date = ''
+        self.text_input_date.text = ''
 
-        self.view_guests_list(self.date_text.text, self.name_text.text, self.phone_text.text)
+        self.show_list_of_guests(
+            self.text_input_date_help.text, self.text_input_name_help.text, self.text_input_phone_help.text
+        )
 
-    def button_find_in_add_person_to_meeting(self, name: str = '', phone: str = '') -> None:
+    def show_list_of_all_guests_or_users(self, table_name: str, name: str = '', phone: str = '') -> None:
         """
-        Handles a click on the search button on the add guest to meeting screen.
+        Show list of all guest (names and phones).
 
-        :param name: The name to search by.
-        :param phone: The phone number to search for.
+        :param table_name: Name of the table from which to take data.
+        :param name: Name to search by.
+        :param phone: Phone number to search for.
         :return: None.
         """
 
-        temp_list = self.db.get_name_phone_from_guests(name, phone)
+        temp_list = self.db.get_name_phone_from_tables(table_name, name, phone)
         self.text_input_list.text = str()
 
         for line in temp_list:
             self.text_input_list.text += ' '.join(line) + '\n'
 
-    def button_find_users(self, name: str = '', phone: str = '') -> None:
+    def show_list_of_guests(self, date: str = '', name: str = '', phone: str = '') -> None:
         """
-        Handles a click on the search button on the add guest to meeting screen.
+        Show list of guests on meetings.
 
-        :param name: The name to search by.
-        :param phone: The phone number to search for.
+        :param date: Date to search by.
+        :param name: Name to find.
+        :param phone: Phone to find.
         :return: None.
         """
 
-        temp_list = self.db.get_name_phone_from_users(name, phone)
+        temp_list = self.db.get_list_of_guests_on_meetings(date, name, phone)
         self.text_input_list.text = str()
 
-        for line in temp_list:
+        for line in sorted(temp_list):
             self.text_input_list.text += ' '.join(line) + '\n'
 
     def next_screen(self, screen_name: str) -> None:
@@ -267,19 +298,3 @@ class RootWidget(BoxLayout):
 
         self.container.clear_widgets()
         self.container.add_widget(screen_now)
-
-    def view_guests_list(self, date: str = '', name: str = '', phone: str = '') -> None:
-        """
-        Creates a guest list from buttons (collective farm, but how else?).
-
-        :param date: Date to search by.
-        :param name: The name to find.
-        :param phone: Phone to find.
-        :return: None.
-        """
-
-        temp_list = self.db.get_list_of_guests_on_meetings(date, name, phone)
-        self.text_input_list_guests.text = str()
-
-        for line in sorted(temp_list):
-            self.text_input_list_guests.text += ' '.join(line) + '\n'

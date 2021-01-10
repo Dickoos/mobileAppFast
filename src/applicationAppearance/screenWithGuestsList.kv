@@ -1,7 +1,7 @@
 RootWidget:
     container: container
 
-    text_input_list_guests: text_input_list_guests
+    text_input_list: text_input_list
 
     BoxLayout:
         id: container
@@ -48,20 +48,20 @@ RootWidget:
                 Button:
                     size_hint_y: 0.2
                     text: "Find"
-                    on_release: root.view_guests_list(text_input_date.text, text_input_name.text, text_input_phone.text)
+                    on_release: root.show_list_of_guests(text_input_date.text, text_input_name.text, text_input_phone.text)
 
             Button:
                 size_hint_x: 0.2
                 text: "Options"
-                on_release: root.button_options()
+                on_release: root.options()
 
         ScrollView:
             id: scroll_view
 
             TextInput:
-                id: text_input_list_guests
+                id: text_input_list
                 multiline: True
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
-                on_parent: root.view_guests_list()
+                on_parent: root.show_list_of_guests()

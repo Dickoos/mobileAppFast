@@ -4,11 +4,11 @@ RootWidget:
     text_input_phone: text_input_phone
     text_input_date: text_input_date
 
-    date_text: date_text
-    name_text: name_text
-    phone_text: phone_text
+    text_input_date_help: text_input_date_help
+    text_input_name_help: text_input_name_help
+    text_input_phone_help: text_input_phone_help
 
-    text_input_list_guests: text_input_list_guests
+    text_input_list: text_input_list
 
     BoxLayout:
         id: container
@@ -42,7 +42,7 @@ RootWidget:
             Button:
                 size_hint_y: 0.2
                 text: "Remove person from meeting"
-                on_release: root.button_delete_person_from_meeting()
+                on_release: root.delete_guest_from_meeting()
 
         GridLayout:
             cols: 2
@@ -53,7 +53,7 @@ RootWidget:
                 text: "Date:"
 
             TextInput:
-                id: date_text
+                id: text_input_date_help
                 multiline: False
 
             Label:
@@ -61,7 +61,7 @@ RootWidget:
                 text: "Name:"
 
             TextInput:
-                id: name_text
+                id: text_input_name_help
                 multiline: False
 
             Label:
@@ -69,26 +69,26 @@ RootWidget:
                 text: "Phone:"
 
             TextInput:
-                id: phone_text
+                id: text_input_phone_help
                 multiline: False
 
         Button:
             size_hint_y: 0.2
             text: "Find"
-            on_release: root.view_guests_list(date_text.text, name_text.text, phone_text.text)
+            on_release: root.show_list_of_guests(text_input_date_help.text, text_input_name_help.text, text_input_phone_help.text)
 
         ScrollView:
             id: scroll_view
 
             TextInput:
-                id: text_input_list_guests
+                id: text_input_list
                 multiline: True
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
-                on_parent: root.view_guests_list()
+                on_parent: root.show_list_of_guests()
 
         Button:
             size_hint_y: 0.2
             text: "<- Back"
-            on_release: root.button_options()
+            on_release: root.options()
