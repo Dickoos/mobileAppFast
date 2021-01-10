@@ -1,0 +1,63 @@
+RootWidget:
+    container: container
+
+    BoxLayout:
+        id: container
+        orientation: "vertical"
+        spacing: 10
+
+        BoxLayout:
+            orientation: "vertical"
+            spacing: 10
+            size_hint_y: 0.5
+
+            GridLayout:
+                cols: 2
+                spacing: 10
+
+                Label:
+                    size_hint_x: 0.2
+                    text: "Phone:"
+
+                TextInput:
+                    multiline: False
+
+            Button:
+                size_hint_y: 0.5
+                text: "Remove user from database"
+
+        GridLayout:
+            cols: 2
+            spacing: 10
+
+            Label:
+                size_hint_x: 0.2
+                text: "Name:"
+
+            TextInput:
+                multiline: False
+
+            Label:
+                size_hint_x: 0.2
+                text: "Phone:"
+
+            TextInput:
+                multiline: False
+
+        Button:
+            size_hint_y: 0.2
+            text: "Find"
+
+        ScrollView:
+            id: scroll_view
+
+            TextInput:
+                multiline: True
+                readonly: True
+                size_hint: 1, None
+                height: max(self.minimum_height, scroll_view.height)
+
+        Button:
+            size_hint_y: 0.2
+            text: "<- Back"
+            on_release: root.next_screen("adminSettingsScreen")

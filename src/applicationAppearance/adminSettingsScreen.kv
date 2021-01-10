@@ -7,7 +7,7 @@ RootWidget:
         spacing: 10
 
         Button:
-            text: "Add person to the database"
+            text: "Add person to database"
             on_release: root.next_screen("addPersonToDB")
 
         Button:
@@ -15,7 +15,7 @@ RootWidget:
             on_release: root.next_screen("addPersonToMeeting")
 
         Button:
-            text: "Remove person from the database"
+            text: "Remove person from database"
             on_release: root.next_screen("removePersonFromDB")
 
         Button:
@@ -25,6 +25,10 @@ RootWidget:
         Button:
             text: "Add application user"
             on_release: root.next_screen("addUserToDB")
+
+        Button:
+            text: "Remove user from database"
+            on_release: root.next_screen("removeUserFromDB")
 
         Button:
             text: "<- Back"
