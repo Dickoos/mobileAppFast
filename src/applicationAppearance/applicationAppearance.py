@@ -4,6 +4,7 @@ from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from src.workWithDB import DB
+from src.captcha import Captcha
 
 
 class MobileApp(App):
@@ -32,6 +33,7 @@ class RootWidget(BoxLayout):
     popup_invalid_data = ObjectProperty(None)
 
     # Fields
+    text_input_captcha = ObjectProperty(None)
     text_input_name = ObjectProperty(None)
     text_input_phone = ObjectProperty(None)
     text_input_email = ObjectProperty(None)
@@ -45,6 +47,9 @@ class RootWidget(BoxLayout):
     text_input_date_help = ObjectProperty(None)
     text_input_name_help = ObjectProperty(None)
     text_input_phone_help = ObjectProperty(None)
+
+    # Variable to work with captcha
+    captcha_text = str()
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
@@ -298,3 +303,16 @@ class RootWidget(BoxLayout):
 
         self.container.clear_widgets()
         self.container.add_widget(screen_now)
+
+    def load_captcha(self) -> None:
+        """
+        Loads captcha to the screen.
+
+        :return: None.
+        """
+
+        captcha_image, self.captcha_text = Captcha.get_captcha()
+
+        captcha_image.save("captcha.png")
+
+        self.ids.widget_canvas.canvas.get_group("rectangle")[0].source = "captcha.png"

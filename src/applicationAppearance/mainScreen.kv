@@ -34,12 +34,28 @@ RootWidget:
             padding: 5
             spacing: 10
 
+            Widget:
+                id: widget_canvas
+
+                canvas:
+                    Rectangle:
+                        group: "rectangle"
+                        pos: self.pos
+                        size: self.size
+
+                on_parent: root.load_captcha()
+
+            TextInput:
+                id: text_input_captcha
+                multiline: False
+
             Label:
                 text: "Username:"
 
             TextInput:
                 id: text_input_username
                 multiline: False
+                disabled: True
 
             Label:
                 text: "Password:"
@@ -48,6 +64,7 @@ RootWidget:
                 id: text_input_password
                 password: True
                 multiline: False
+                disabled: True
 
         Button:
             size_hint_y: 0.12
