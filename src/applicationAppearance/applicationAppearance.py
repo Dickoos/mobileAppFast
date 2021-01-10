@@ -43,6 +43,7 @@ class RootWidget(BoxLayout):
     text_input_list = ObjectProperty(None)
 
     # Variables to automatically update the list on some screens
+    date_text = ObjectProperty(None)
     name_text = ObjectProperty(None)
     phone_text = ObjectProperty(None)
 
@@ -155,7 +156,7 @@ class RootWidget(BoxLayout):
 
     def button_delete_person_from_db(self) -> None:
         """
-        handler for pressing the button to delete a person from the database.
+        Handler for pressing the button to delete a person from the database.
 
         :return: None.
         """
@@ -164,6 +165,19 @@ class RootWidget(BoxLayout):
         self.text_input_phone.text = ''
 
         self.button_find_in_add_person_to_meeting(self.name_text.text, self.phone_text.text)
+
+    def button_delete_person_from_meeting(self) -> None:
+        """
+        Handling a button to remove a person from a meeting.
+
+        :return: None.
+        """
+
+        self.db.delete_person_from_meeting(self.text_input_phone.text, self.text_input_date.text)
+        self.text_input_phone.text = ''
+        self.text_input_date = ''
+
+        self.view_guests_list(self.date_text.text, self.name_text.text, self.phone_text.text)
 
     def button_find_in_add_person_to_meeting(self, name: str = '', phone: str = '') -> None:
         """

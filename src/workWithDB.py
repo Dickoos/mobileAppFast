@@ -183,6 +183,21 @@ class DB:
         self.cursor.execute(query, values)
         self.connection.commit()
 
+    def delete_person_from_meeting(self, phone: str, date: str) -> None:
+        """
+        Removes a person from a specific meeting.
+
+        :param phone: Person's phone.
+        :param date: Meeting date.
+        :return: None.
+        """
+
+        query = "delete from {} where phone = %s and date = %s".format(self.meetings_table_name)
+        values = (phone, date)
+
+        self.cursor.execute(query, values)
+        self.connection.commit()
+
     def __del__(self):
         """
         Garbage removal - database connection and cursor.

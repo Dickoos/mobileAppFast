@@ -1,6 +1,15 @@
 RootWidget:
     container: container
 
+    text_input_phone: text_input_phone
+    text_input_date: text_input_date
+
+    date_text: date_text
+    name_text: name_text
+    phone_text: phone_text
+
+    text_input_list_guests: text_input_list_guests
+
     BoxLayout:
         id: container
         orientation: "vertical"
@@ -19,6 +28,7 @@ RootWidget:
                     text: "Phone:"
 
                 TextInput:
+                    id: text_input_phone
                     multiline: False
 
                 Label:
@@ -26,11 +36,13 @@ RootWidget:
                     text: "Date:"
 
                 TextInput:
+                    id: text_input_date
                     multiline: False
 
             Button:
                 size_hint_y: 0.2
                 text: "Remove person from meeting"
+                on_release: root.button_delete_person_from_meeting()
 
         GridLayout:
             cols: 2
@@ -41,6 +53,7 @@ RootWidget:
                 text: "Date:"
 
             TextInput:
+                id: date_text
                 multiline: False
 
             Label:
@@ -48,6 +61,7 @@ RootWidget:
                 text: "Name:"
 
             TextInput:
+                id: name_text
                 multiline: False
 
             Label:
@@ -55,20 +69,24 @@ RootWidget:
                 text: "Phone:"
 
             TextInput:
+                id: phone_text
                 multiline: False
 
         Button:
             size_hint_y: 0.2
             text: "Find"
+            on_release: root.view_guests_list(date_text.text, name_text.text, phone_text.text)
 
         ScrollView:
             id: scroll_view
 
             TextInput:
+                id: text_input_list_guests
                 multiline: True
                 readonly: True
                 size_hint: 1, None
                 height: max(self.minimum_height, scroll_view.height)
+                on_parent: root.view_guests_list()
 
         Button:
             size_hint_y: 0.2
