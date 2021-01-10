@@ -111,6 +111,35 @@ class DB:
 
         return True
 
+    def add_user_to_db(self, name: str, login: str, password: str, phone: str, email: str, type_of_user: str) -> bool:
+        """
+        Allows to add a user to the database.
+
+        :param name: User's real name.
+        :param login: User login.
+        :param password: User password.
+        :param phone: User's phone number (must be unique).
+        :param email: User's email.
+        :param type_of_user: User type (1 - admin, 2 - regular user).
+        :return: Did you manage to record.
+        """
+
+        if name == '' or login == '' or password == '' or phone == '' or email == '' or type_of_user == '':
+            return False
+
+        query = "insert into {} values (%s, %s, %s, %s, %s, %s)".format(self.user_table_name)
+        values = (name, login, password, phone, email, type_of_user)
+
+        try:
+            self.cursor.execute(query, values)
+            self.connection.commit()
+        except psycopg2.errors.UniqueViolation:
+            self.connection.commit()
+
+            return False
+
+        return True
+
     def get_name_phone_from_guests(self, name: str, phone: str) -> list:
         """
         Returns the list of guest - phone number.

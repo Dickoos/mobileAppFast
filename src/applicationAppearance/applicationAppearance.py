@@ -41,6 +41,9 @@ class RootWidget(BoxLayout):
     text_input_email = ObjectProperty(None)
     text_input_date = ObjectProperty(None)
     text_input_list = ObjectProperty(None)
+    text_input_login = ObjectProperty(None)
+    text_input_password = ObjectProperty(None)
+    text_input_user_type = ObjectProperty(None)
 
     # Variables to automatically update the list on some screens
     date_text = ObjectProperty(None)
@@ -129,6 +132,34 @@ class RootWidget(BoxLayout):
             self.text_input_name.text = ''
             self.text_input_phone.text = ''
             self.text_input_email.text = ''
+        else:
+            self.popup_invalid_data.open()
+
+    def button_add_user_to_db(self) -> None:
+        """
+        Processing the button for adding a user to the database.
+
+        :return: None.
+        """
+
+        if not self.check_correct_phone(self.text_input_phone.text):
+            self.text_input_phone.text = "Invalid number"
+
+            return
+        if '1' < self.text_input_user_type.text > '2':
+            self.text_input_user_type.text = "Invalid type"
+
+            return
+
+        if self.db.add_user_to_db(self.text_input_name.text, self.text_input_login.text,
+                                  self.text_input_password.text, self.text_input_phone.text,
+                                  self.text_input_email.text, self.text_input_user_type.text):
+            self.text_input_name.text = ''
+            self.text_input_login.text = ''
+            self.text_input_password.text = ''
+            self.text_input_phone.text = ''
+            self.text_input_email.text = ''
+            self.text_input_user_type.text = ''
         else:
             self.popup_invalid_data.open()
 
