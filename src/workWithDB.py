@@ -121,22 +121,26 @@ class DB:
         """
 
         query = "select name, phone from {}".format(self.guests_table_name)
-        if name != '' and phone != '':
-            query += " where name = %s and phone = %s"
-            values = (name, phone)
-        elif name != '':
+        values = list()
+
+        if name != '':
             query += " where name = %s"
-            values = (name, )
-        elif phone != '':
-            query += " where phone = %s"
-            values = (phone, )
-        else:
-            values = ()
+            values.append(name)
+        if phone != '':
+            if query[-2] != '%':
+                query += " where phone = %s"
+            else:
+                query += " and phone = %s"
+
+            values.append(phone)
 
         print(query, values)
         self.cursor.execute(query, values)
 
         return self.cursor.fetchall()
+
+    # def get_list_of_guests_on_meetings(self, date: str, name: str, phone: str) -> list:
+    #     pass
 
     def __del__(self):
         """
