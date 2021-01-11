@@ -1,10 +1,13 @@
+import os
+import datetime
+
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty
 from kivy.uix.boxlayout import BoxLayout
 
-from src.workWithDB import DB
 from src.captcha import Captcha
+from src.workWithDB import DB
 
 
 class MobileApp(App):
@@ -48,8 +51,14 @@ class RootWidget(BoxLayout):
     text_input_name_help = ObjectProperty(None)
     text_input_phone_help = ObjectProperty(None)
 
-    # Variable to work with captcha
+    # Variables to work with captcha
     captcha_text = str()
+    captcha_image = ObjectProperty(None)
+    button_new_captcha = ObjectProperty(None)
+
+    # Variables to work with time
+    first_time = None
+    count_of_try = 0
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
@@ -96,9 +105,27 @@ class RootWidget(BoxLayout):
         :return: None.
         """
 
+        if not self.text_input_captcha.disabled:
+            if self.text_input_captcha.text == self.captcha_text:
+                self.close_captcha()
+            else:
+                self.text_input_captcha.text = ''
+                self.load_captcha()
+
+            return
+
         self.db.type_of_user_now = self.db.login_in(login, password)
 
         if self.db.type_of_user_now == self.db.none_user:
+            self.count_of_try += 1
+
+            if self.first_time is None:
+                self.first_time = datetime.datetime.now()
+            else:
+                delta_time = datetime.datetime.now() - self.first_time
+                if int(delta_time.total_seconds() / 60) >= 60 and self.count_of_try >= 5:
+                    self.start_captcha()
+
             self.popup_invalid_data.open()
         else:
             self.next_screen("screenWithGuestsList")
@@ -232,7 +259,9 @@ class RootWidget(BoxLayout):
         self.db.delete_user_from_db(self.text_input_phone.text)
         self.text_input_phone.text = ''
 
-        self.show_list_of_all_guests_or_users(self.db.users_table_name, self.text_input_name_help.text, self.text_input_phone_help.text)
+        self.show_list_of_all_guests_or_users(
+            self.db.users_table_name, self.text_input_name_help.text, self.text_input_phone_help.text
+        )
 
     def delete_guest_from_meeting(self) -> None:
         """
@@ -304,6 +333,19 @@ class RootWidget(BoxLayout):
         self.container.clear_widgets()
         self.container.add_widget(screen_now)
 
+    def start_captcha(self) -> None:
+        """
+        Launches captcha for the first time.
+
+        :return: None.
+        """
+
+        self.button_new_captcha.disabled = False
+        self.text_input_captcha.disabled = False
+        self.text_input_login.disabled = True
+        self.text_input_password.disabled = True
+        self.load_captcha()
+
     def load_captcha(self) -> None:
         """
         Loads captcha to the screen.
@@ -315,4 +357,18 @@ class RootWidget(BoxLayout):
 
         captcha_image.save("captcha.png")
 
-        self.ids.widget_canvas.canvas.get_group("rectangle")[0].source = "captcha.png"
+        self.captcha_image.reload()
+
+        os.remove("captcha.png")
+
+    def close_captcha(self) -> None:
+        """
+        Closing fields for entering captcha. Opening fields for entering login and password.
+
+        :return: None.
+        """
+
+        self.button_new_captcha.disabled = True
+        self.text_input_captcha.disabled = True
+        self.text_input_login.disabled = False
+        self.text_input_password.disabled = False
