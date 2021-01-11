@@ -27,13 +27,41 @@ RootWidget:
                 spacing: 10
 
                 TextInput:
-                    text: "Wrong data.\nPossible reasons:\n1. Similar data is already in the database.\n2. Errors on the server."
+                    text: "Wrong data.\nPossible reasons:\n1. Similar data is already in the database.\n2. Errors on the server.\n3. Error in csv file."
                     readonly: True
 
                 Button:
                     size_hint_y: 0.12
                     text: "Press to dismiss"
                     on_release: popup_invalid_data.dismiss()
+
+        Popup:
+            id: popup_load_file
+            title: "Select a file"
+            on_parent:
+                if self.parent == container: self.parent.remove_widget(self)
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: 5
+                spacing: 10
+
+                FileChooserListView:
+                    id: file_chooser
+                    path: "./"
+
+                GridLayout:
+                    cols: 2
+                    spacing: 10
+                    size_hint_y: 0.2
+
+                    Button:
+                        text: "Cancel"
+                        on_release: popup_load_file.dismiss()
+
+                    Button:
+                        text: "Load"
+                        on_release: root.load_csv(*file_chooser.selection), popup_load_file.dismiss()
 
         GridLayout:
             cols: 2
@@ -91,6 +119,16 @@ RootWidget:
             size_hint_y: 0.2
             text: "Write to database"
             on_release: root.add_user_to_db()
+
+        Button:
+            size_hint_y: 0.2
+            text: "Csv import"
+            on_release: popup_load_file.open()
+
+        Button:
+            size_hint_y: 0.2
+            text: "Ignore errors"
+            disabled: True
 
         Button:
             size_hint_y: 0.2

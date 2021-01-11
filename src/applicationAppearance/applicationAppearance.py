@@ -1,5 +1,7 @@
+import csv
 import os
 import datetime
+from typing import List, Dict
 
 from kivy.app import App
 from kivy.lang import Builder
@@ -96,6 +98,18 @@ class RootWidget(BoxLayout):
 
         return True
 
+    @staticmethod
+    def get_csv_dict(filename: str) -> List[Dict[str, str]]:
+        """
+        Reads data from a csv file and returns a list with data.
+
+        :param filename: Name of the file (along with the path).
+        :return: Data list.
+        """
+
+        with open(filename, encoding="utf-8") as csv_file:
+            return [dict(row) for row in csv.DictReader(csv_file, delimiter='/')]
+
     def login_in(self, login: str, password: str) -> None:
         """
         Trying to login in.
@@ -123,8 +137,10 @@ class RootWidget(BoxLayout):
                 self.first_time = datetime.datetime.now()
             else:
                 delta_time = datetime.datetime.now() - self.first_time
-                if int(delta_time.total_seconds() / 60) >= 60 and self.count_of_try >= 5:
+                if int(delta_time.total_seconds() / 60) <= 60 and self.count_of_try >= 5:
                     self.start_captcha()
+                elif int(delta_time.total_seconds() / 60) > 60:
+                    self.first_time = None
 
             self.popup_invalid_data.open()
         else:
@@ -372,3 +388,36 @@ class RootWidget(BoxLayout):
         self.text_input_captcha.disabled = True
         self.text_input_login.disabled = False
         self.text_input_password.disabled = False
+
+    def load_csv(self, filename: str) -> None:
+        """
+        Uploading csv file with users.
+
+        :param filename: File name.
+        :return: None.
+        """
+
+        data_list = self.get_csv_dict(filename)
+
+        # Silly file validation check.
+        try:
+            data_list[0]["name"]
+        except KeyError:
+            self.popup_invalid_data.open()
+            return
+
+        error_data = list()
+        for row in data_list:
+            all_right = True
+            for key in row.keys():
+                if row[key] == '':
+                    all_right = False
+
+            if not all_right:
+                error_data.append(row)
+            elif not self.db.add_user_to_db(*[row[key] for key in row.keys()]):
+                error_data.append(row)
+
+        if len(error_data) != 0:
+            # TODO Ты остановился здесь. Изменить функцию кнопки записи - хорошая идея.
+            pass
