@@ -36,6 +36,15 @@ class RootWidget(BoxLayout):
 
     # Pop-up message
     popup_invalid_data = ObjectProperty(None)
+    popup_error_data = ObjectProperty(None)
+
+    # Pop-up fields
+    popup_text_input_name = ObjectProperty(None)
+    popup_text_input_login = ObjectProperty(None)
+    popup_text_input_password = ObjectProperty(None)
+    popup_text_input_phone = ObjectProperty(None)
+    popup_text_input_email = ObjectProperty(None)
+    popup_text_input_user_type = ObjectProperty(None)
 
     # Fields
     text_input_captcha = ObjectProperty(None)
@@ -61,6 +70,9 @@ class RootWidget(BoxLayout):
     # Variables to work with time
     first_time = None
     count_of_try = 0
+
+    # Variables to work with csv
+    error_data = list()
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
@@ -178,7 +190,9 @@ class RootWidget(BoxLayout):
             self.text_input_email.text = "EMPTY FIELD"
             return
 
-        if self.db.add_guest_to_db(self.text_input_name.text, self.text_input_phone.text, self.text_input_email.text):
+        if not self.db.add_guest_to_db(self.text_input_name.text,
+                                       self.text_input_phone.text,
+                                       self.text_input_email.text):
             self.text_input_name.text = ''
             self.text_input_phone.text = ''
             self.text_input_email.text = ''
@@ -211,9 +225,9 @@ class RootWidget(BoxLayout):
             self.text_input_email.text = "EMPTY FIELD"
             return
 
-        if self.db.add_user_to_db(self.text_input_name.text, self.text_input_login.text,
-                                  self.text_input_password.text, self.text_input_phone.text,
-                                  self.text_input_email.text, self.text_input_user_type.text):
+        if not self.db.add_user_to_db(self.text_input_name.text, self.text_input_login.text,
+                                      self.text_input_password.text, self.text_input_phone.text,
+                                      self.text_input_email.text, self.text_input_user_type.text):
             self.text_input_name.text = ''
             self.text_input_login.text = ''
             self.text_input_password.text = ''
@@ -222,6 +236,54 @@ class RootWidget(BoxLayout):
             self.text_input_user_type.text = ''
         else:
             self.popup_invalid_data.open()
+
+    def add_user_to_db_from_error_popup(self) -> None:
+        """
+        Attempts to add a user to the database.
+
+        :return: None.
+        """
+
+        self.make_all_popup_fields_white()
+
+        if not self.check_correct_phone(self.popup_text_input_phone.text):
+            self.popup_text_input_phone.text = "Invalid number"
+            self.popup_text_input_phone.background_color = "red"
+            return
+        if self.popup_text_input_user_type.text != '1' and self.popup_text_input_user_type.text != '2':
+            self.popup_text_input_user_type.text = "Invalid type"
+            self.popup_text_input_user_type.background_color = "red"
+            return
+        if self.popup_text_input_name.text == '':
+            self.popup_text_input_name.text = "EMPTY FIELD"
+            self.popup_text_input_name.background_color = "red"
+            return
+        if self.popup_text_input_login.text == '':
+            self.popup_text_input_login.text = "EMPTY FIELD"
+            self.popup_text_input_login.background_color = "red"
+            return
+        if self.popup_text_input_password.text == '':
+            self.popup_text_input_password.text = "EMPTY FIELD"
+            self.popup_text_input_password.background_color = "red"
+            return
+        if self.popup_text_input_email.text == '':
+            self.popup_text_input_email.text = "EMPTY FIELD"
+            self.popup_text_input_email.background_color = "red"
+            return
+
+        if not self.db.add_user_to_db(self.popup_text_input_name.text, self.popup_text_input_login.text,
+                                      self.popup_text_input_password.text, self.popup_text_input_phone.text,
+                                      self.popup_text_input_email.text, self.popup_text_input_user_type.text):
+            self.error_data.pop(0)
+            if len(self.error_data):
+                self.load_new_error_data_in_fields()
+            else:
+                self.popup_error_data.dismiss()
+        else:
+            # Since we cannot say in which field the error is, we paint them in a different color just in case
+            self.popup_text_input_email.background_color = "pink"
+            self.popup_text_input_login.background_color = "pink"
+            self.popup_text_input_phone.background_color = "pink"
 
     def add_guest_to_meeting(self) -> None:
         """
@@ -237,7 +299,7 @@ class RootWidget(BoxLayout):
             self.text_input_date.text = "Invalid date"
             return
 
-        if self.db.add_guest_to_meeting(self.text_input_phone.text, self.text_input_date.text):
+        if not self.db.add_guest_to_meeting(self.text_input_phone.text, self.text_input_date.text):
             self.text_input_phone.text = ''
             self.text_input_date.text = ''
         else:
@@ -406,7 +468,7 @@ class RootWidget(BoxLayout):
             self.popup_invalid_data.open()
             return
 
-        error_data = list()
+        self.error_data = list()
         for row in data_list:
             all_right = True
             for key in row.keys():
@@ -414,10 +476,62 @@ class RootWidget(BoxLayout):
                     all_right = False
 
             if not all_right:
-                error_data.append(row)
-            elif not self.db.add_user_to_db(*[row[key] for key in row.keys()]):
-                error_data.append(row)
+                self.error_data.append(row)
+            elif self.db.add_user_to_db(*[row[key] for key in row.keys()]):
+                # Since the check is carried out on the server, we can only guess in which fields the errors are.
+                row["email"] = ''
+                row["login"] = ''
+                row["phone"] = ''
 
-        if len(error_data) != 0:
-            # TODO Ты остановился здесь. Изменить функцию кнопки записи - хорошая идея.
-            pass
+                self.error_data.append(row)
+
+        if len(self.error_data) != 0:
+            self.popup_error_data.open()
+            self.load_new_error_data_in_fields()
+
+    def load_new_error_data_in_fields(self) -> None:
+        """
+        Loads new data with errors into fields.
+
+        :return: None.
+        """
+
+        zero_row = self.error_data[0]
+
+        self.popup_text_input_name.text = zero_row["name"]
+        if zero_row["name"] == '' or zero_row["name"] is None:
+            self.popup_text_input_name.background_color = "red"
+
+        self.popup_text_input_login.text = zero_row["login"]
+        if zero_row["login"] == '' or zero_row["login"] is None:
+            self.popup_text_input_login.background_color = "red"
+
+        self.popup_text_input_password.text = zero_row["password"]
+        if zero_row["password"] == '' or zero_row["password"] is None:
+            self.popup_text_input_password.background_color = "red"
+
+        self.popup_text_input_phone.text = zero_row["phone"]
+        if zero_row["phone"] == '' or zero_row["phone"] is None:
+            self.popup_text_input_phone.background_color = "red"
+
+        self.popup_text_input_email.text = zero_row["email"]
+        if zero_row["email"] == '' or zero_row["email"] is None:
+            self.popup_text_input_email.background_color = "red"
+
+        self.popup_text_input_user_type.text = zero_row["type"]
+        if zero_row["type"] == '' or zero_row["type"] is None:
+            self.popup_text_input_user_type.background_color = "red"
+
+    def make_all_popup_fields_white(self) -> None:
+        """
+        Returns all fields to a fine white color.
+
+        :return: None.
+        """
+
+        self.popup_text_input_name.background_color = "white"
+        self.popup_text_input_login.background_color = "white"
+        self.popup_text_input_password.background_color = "white"
+        self.popup_text_input_phone.background_color = "white"
+        self.popup_text_input_email.background_color = "white"
+        self.popup_text_input_user_type.background_color = "white"

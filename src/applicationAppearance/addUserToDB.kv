@@ -9,6 +9,14 @@ RootWidget:
     text_input_user_type: text_input_user_type
 
     popup_invalid_data: popup_invalid_data
+    popup_error_data: popup_error_data
+
+    popup_text_input_name: popup_text_input_name
+    popup_text_input_login: popup_text_input_login
+    popup_text_input_password: popup_text_input_password
+    popup_text_input_phone: popup_text_input_phone
+    popup_text_input_email: popup_text_input_email
+    popup_text_input_user_type: popup_text_input_user_type
 
     BoxLayout:
         id: container
@@ -62,6 +70,77 @@ RootWidget:
                     Button:
                         text: "Load"
                         on_release: root.load_csv(*file_chooser.selection), popup_load_file.dismiss()
+
+        Popup:
+            id: popup_error_data
+            title: "Error data"
+            on_parent:
+                if self.parent == container: self.parent.remove_widget(self)
+
+            BoxLayout:
+                orientation: "vertical"
+                spacing: 10
+
+                GridLayout:
+                    cols: 2
+                    spacing: 10
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "Name:"
+
+                    TextInput:
+                        id: popup_text_input_name
+                        multiline: False
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "login:"
+
+                    TextInput:
+                        id: popup_text_input_login
+                        multiline: False
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "Password:"
+
+                    TextInput:
+                        id: popup_text_input_password
+                        multiline: False
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "Phone:"
+
+                    TextInput:
+                        id: popup_text_input_phone
+                        multiline: False
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "Email:"
+
+                    TextInput:
+                        id: popup_text_input_email
+                        multiline: False
+
+                    Label:
+                        size_hint_x: 0.2
+                        text: "Type:"
+
+                    TextInput:
+                        id: popup_text_input_user_type
+                        multiline: False
+
+                Button:
+                    size_hint_y: 0.2
+                    text: "Write to database"
+                    on_release: root.add_user_to_db_from_error_popup()
+
+                Button:
+                    size_hint_y: 0.2
+                    text: "Ignore errors"
 
         GridLayout:
             cols: 2
@@ -124,11 +203,6 @@ RootWidget:
             size_hint_y: 0.2
             text: "Csv import"
             on_release: popup_load_file.open()
-
-        Button:
-            size_hint_y: 0.2
-            text: "Ignore errors"
-            disabled: True
 
         Button:
             size_hint_y: 0.2

@@ -65,14 +65,14 @@ class DB:
         else:
             return type_of_user[0]
 
-    def add_guest_to_db(self, name: str, phone: str, email: str) -> bool:
+    def add_guest_to_db(self, name: str, phone: str, email: str) -> int:
         """
         Add a guest to database.
 
         :param name: Name of person.
         :param phone: Person's phone.
         :param email: Email of person.
-        :return: Whether the recording went well.
+        :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
         query = "INSERT INTO {} VALUES (%s, %s, %s)".format(self.guests_table_name)
@@ -80,7 +80,7 @@ class DB:
 
         return self.try_to_insert_in_db(query, values)
 
-    def add_user_to_db(self, name: str, login: str, password: str, phone: str, email: str, type_of_user: str) -> bool:
+    def add_user_to_db(self, name: str, login: str, password: str, phone: str, email: str, type_of_user: str) -> int:
         """
         Add user to database.
 
@@ -90,7 +90,7 @@ class DB:
         :param phone: User's phone number (must be unique).
         :param email: User's email.
         :param type_of_user: User type (1 - admin, 2 - regular user).
-        :return: Whether the recording was successful.
+        :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
         query = "INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s)".format(self.users_table_name)
@@ -98,13 +98,13 @@ class DB:
 
         return self.try_to_insert_in_db(query, values)
 
-    def add_guest_to_meeting(self, phone: str, date: str) -> bool:
+    def add_guest_to_meeting(self, phone: str, date: str) -> int:
         """
         Add guest to meeting.
 
         :param phone: Guest phone number (recording is possible only if the guest is in the database).
         :param date: Date of the event (in the format day.month.year).
-        :return: Whether the recording was successful.
+        :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
         query = "INSERT INTO {} VALUES (%s, %s)".format(self.meetings_table_name)
@@ -213,23 +213,23 @@ class DB:
         self.cursor.execute(query, values)
         self.connection.commit()
 
-    def try_to_insert_in_db(self, query: str, values: list) -> bool:
+    def try_to_insert_in_db(self, query: str, values: list) -> int:
         """
         Trying to write something to database.
 
         :param query: Request text.
         :param values: Variables required for request.
-        :return: Whether the recording was successful.
+        :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
-        all_right = True
+        all_right = 0
 
         try:
             self.cursor.execute(query, values)
         except psycopg2.errors.UniqueViolation:
-            all_right = False
+            all_right = 1
         except psycopg2.errors.ForeignKeyViolation:
-            all_right = False
+            all_right = 2
 
         self.connection.commit()
 
