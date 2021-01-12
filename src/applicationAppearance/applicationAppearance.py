@@ -5,7 +5,7 @@ from typing import List, Dict
 
 from kivy.app import App
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, ListProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from src.captcha import Captcha
@@ -37,6 +37,7 @@ class RootWidget(BoxLayout):
     # Pop-up message
     popup_invalid_data = ObjectProperty(None)
     popup_error_data = ObjectProperty(None)
+    popup_after_add_from_csv = ObjectProperty(None)
 
     # Pop-up fields
     popup_text_input_name = ObjectProperty(None)
@@ -72,7 +73,8 @@ class RootWidget(BoxLayout):
     count_of_try = 0
 
     # Variables to work with csv
-    error_data = list()
+    error_data = ListProperty()
+    added_from_csv = NumericProperty()
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
@@ -275,10 +277,12 @@ class RootWidget(BoxLayout):
                                       self.popup_text_input_password.text, self.popup_text_input_phone.text,
                                       self.popup_text_input_email.text, self.popup_text_input_user_type.text):
             self.error_data.pop(0)
+            self.added_from_csv += 1
             if len(self.error_data):
                 self.load_new_error_data_in_fields()
             else:
                 self.popup_error_data.dismiss()
+                self.popup_after_add_from_csv.open()
         else:
             # Since we cannot say in which field the error is, we paint them in a different color just in case
             self.popup_text_input_email.background_color = "pink"
@@ -468,7 +472,8 @@ class RootWidget(BoxLayout):
             self.popup_invalid_data.open()
             return
 
-        self.error_data = list()
+        self.error_data = []
+        self.added_from_csv = 0
         for row in data_list:
             all_right = True
             for key in row.keys():
@@ -484,6 +489,8 @@ class RootWidget(BoxLayout):
                 row["phone"] = ''
 
                 self.error_data.append(row)
+            else:
+                self.added_from_csv += 1
 
         if len(self.error_data) != 0:
             self.popup_error_data.open()

@@ -226,8 +226,9 @@ class DB:
 
         try:
             self.cursor.execute(query, values)
-        except psycopg2.errors.UniqueViolation:
+        except psycopg2.errors.UniqueViolation as error:
             all_right = 1
+            print(error)
         except psycopg2.errors.ForeignKeyViolation:
             all_right = 2
 

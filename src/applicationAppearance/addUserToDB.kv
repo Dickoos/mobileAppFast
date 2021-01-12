@@ -10,6 +10,7 @@ RootWidget:
 
     popup_invalid_data: popup_invalid_data
     popup_error_data: popup_error_data
+    popup_after_add_from_csv: popup_after_add_from_csv
 
     popup_text_input_name: popup_text_input_name
     popup_text_input_login: popup_text_input_login
@@ -141,6 +142,27 @@ RootWidget:
                 Button:
                     size_hint_y: 0.2
                     text: "Ignore errors"
+                    on_release: popup_error_data.dismiss(), popup_after_add_from_csv.open()
+
+        Popup:
+            id: popup_after_add_from_csv
+            title: "Report!"
+            on_parent:
+                if self.parent == container: self.parent.remove_widget(self)
+
+            BoxLayout:
+                orientation: "vertical"
+                padding: 5
+                spacing: 10
+
+                TextInput:
+                    text: "Added: " + str(root.added_from_csv) + "\nIgnore: " + str(len(root.error_data))
+                    readonly: True
+
+                Button:
+                    size_hint_y: 0.12
+                    text: "Press to dismiss"
+                    on_release: popup_after_add_from_csv.dismiss()
 
         GridLayout:
             cols: 2
