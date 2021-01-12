@@ -54,7 +54,7 @@ class DB:
         :return: User type (0 if not found).
         """
 
-        query = "SELECT type FROM {} WHERE login = %s and password = %s".format(self.users_table_name)
+        query = "SELECT type_id FROM {} WHERE login = %s and password = %s".format(self.users_table_name)
         values = (login, password)
 
         self.cursor.execute(query, values)
@@ -75,7 +75,7 @@ class DB:
         :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
-        query = "INSERT INTO {} VALUES (%s, %s, %s)".format(self.guests_table_name)
+        query = "INSERT INTO {} (name, phone, email) VALUES (%s, %s, %s)".format(self.guests_table_name)
         values = [name, phone, email]
 
         return self.try_to_insert_in_db(query, values)
@@ -93,7 +93,8 @@ class DB:
         :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
-        query = "INSERT INTO {} VALUES (%s, %s, %s, %s, %s, %s)".format(self.users_table_name)
+        query = "INSERT INTO {} (name, login, password, phone, email, type_id) VALUES (%s, %s, %s, %s, %s, %s)"
+        query = query.format(self.users_table_name)
         values = [name, login, password, phone, email, type_of_user]
 
         return self.try_to_insert_in_db(query, values)
@@ -107,7 +108,7 @@ class DB:
         :return: 0 - everything is fine, 1 - uniqueness error, 2 - phone number error.
         """
 
-        query = "INSERT INTO {} VALUES (%s, %s)".format(self.meetings_table_name)
+        query = "INSERT INTO {} (phone, date) VALUES (%s, %s)".format(self.meetings_table_name)
         values = [phone, date]
 
         return self.try_to_insert_in_db(query, values)
