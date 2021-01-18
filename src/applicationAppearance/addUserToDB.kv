@@ -136,6 +136,11 @@ RootWidget:
 
                 Button:
                     size_hint_y: 0.2
+                    text: "Generate password"
+                    on_release: root.get_password(popup_text_input_password)
+
+                Button:
+                    size_hint_y: 0.2
                     text: "Write to database"
                     on_release: root.add_user_to_db_from_error_popup()
 
@@ -215,6 +220,11 @@ RootWidget:
             TextInput:
                 id: text_input_user_type
                 multiline: False
+
+        Button:
+            size_hint_y: 0.2
+            text: "Generate password"
+            on_release: root.get_password(text_input_password)
 
         Button:
             size_hint_y: 0.2

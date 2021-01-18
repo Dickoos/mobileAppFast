@@ -9,6 +9,7 @@ from kivy.properties import ObjectProperty, ListProperty, NumericProperty
 from kivy.uix.boxlayout import BoxLayout
 
 from src.captcha import Captcha
+from src.password import Password
 from src.workWithDB import DB
 
 
@@ -123,6 +124,17 @@ class RootWidget(BoxLayout):
 
         with open(filename, encoding="utf-8") as csv_file:
             return [dict(row) for row in csv.DictReader(csv_file, delimiter='/')]
+
+    @staticmethod
+    def get_password(text_input: ObjectProperty) -> None:
+        """
+        Fills in the field with the prepared password.
+
+        :param text_input: The field where you need to insert the password.
+        :return: None.
+        """
+
+        text_input.text = Password.get_password()
 
     def login_in(self, login: str, password: str) -> None:
         """
