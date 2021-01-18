@@ -1,9 +1,9 @@
 import csv
 import os
 import datetime
+
 from string import digits
 from typing import List, Dict
-
 from xml.etree import ElementTree
 from kivy.app import App
 from kivy.lang import Builder
@@ -421,10 +421,7 @@ class RootWidget(BoxLayout):
         """
 
         temp_list = self.db.get_name_phone_from_tables(table_name, name, phone)
-        self.text_input_list.text = str()
-
-        for line in temp_list:
-            self.text_input_list.text += ' '.join(line) + '\n'
+        self.text_input_list.text = ''.join([' '.join(line) + '\n' for line in sorted(temp_list)])
 
     def show_list_of_guests(self, date: str = '', name: str = '', phone: str = '') -> None:
         """
@@ -437,10 +434,8 @@ class RootWidget(BoxLayout):
         """
 
         temp_list = self.db.get_list_of_guests_on_meetings(date, name, phone)
-        self.text_input_list.text = str()
-
-        for line in sorted(temp_list):
-            self.text_input_list.text += ' '.join(line) + '\n'
+        temp_list.sort(key=lambda line: datetime.datetime.strptime(line[0], '%d.%m.%Y'))
+        self.text_input_list.text = ''.join([' '.join(line) + '\n' for line in temp_list])
 
     def next_screen(self, screen_name: str) -> None:
         """
