@@ -33,9 +33,11 @@ class Captcha:
         text_size = 14
         text_coordinates_start = get_random_coordinates(int(image_width * 0.1), int(image_height * 0.5))
 
+        # Start draw captcha
         image = Image.new("RGB", (image_width, image_height), choice(background_colors))
         draw = ImageDraw.Draw(image)
 
+        # Draw lines
         for i in range(count_of_lines):
             draw.line(
                 (get_random_coordinates(image_width, image_height), get_random_coordinates(image_width, image_height)),
@@ -43,9 +45,11 @@ class Captcha:
                 width=randint(line_width_min, line_width_max)
             )
 
+        # Draw points
         for i in range(count_of_points):
             draw.point(get_random_coordinates(image_width, image_height), fill=get_random_color())
 
+        # Draw text
         text = get_random_text()
         text_color = choice(text_colors)
         text_font_file = "src/fonts/ComicNeue-Bold.ttf"
