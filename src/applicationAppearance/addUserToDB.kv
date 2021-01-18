@@ -10,7 +10,7 @@ RootWidget:
 
     popup_invalid_data: popup_invalid_data
     popup_error_data: popup_error_data
-    popup_after_add_from_csv: popup_after_add_from_csv
+    popup_after_add_from_file: popup_after_add_from_file
 
     popup_text_input_name: popup_text_input_name
     popup_text_input_login: popup_text_input_login
@@ -36,7 +36,7 @@ RootWidget:
                 spacing: 10
 
                 TextInput:
-                    text: "Wrong data.\nPossible reasons:\n1. Similar data is already in the database.\n2. Errors on the server.\n3. Error in csv file."
+                    text: "Wrong data.\nPossible reasons:\n1. Similar data is already in the database.\n2. Errors on the server.\n3. Error in csv\\xml file."
                     readonly: True
 
                 Button:
@@ -70,7 +70,7 @@ RootWidget:
 
                     Button:
                         text: "Load"
-                        on_release: root.load_csv(*file_chooser.selection), popup_load_file.dismiss()
+                        on_release: root.load_file(*file_chooser.selection), popup_load_file.dismiss()
 
         Popup:
             id: popup_error_data
@@ -147,10 +147,10 @@ RootWidget:
                 Button:
                     size_hint_y: 0.2
                     text: "Ignore errors"
-                    on_release: popup_error_data.dismiss(), popup_after_add_from_csv.open()
+                    on_release: popup_error_data.dismiss(), popup_after_add_from_file.open()
 
         Popup:
-            id: popup_after_add_from_csv
+            id: popup_after_add_from_file
             title: "Report!"
             on_parent:
                 if self.parent == container: self.parent.remove_widget(self)
@@ -161,13 +161,13 @@ RootWidget:
                 spacing: 10
 
                 TextInput:
-                    text: "Added: " + str(root.added_from_csv) + "\nIgnore: " + str(len(root.error_data))
+                    text: "Added: " + str(root.added_from_file) + "\nIgnore: " + str(len(root.error_data))
                     readonly: True
 
                 Button:
                     size_hint_y: 0.12
                     text: "Press to dismiss"
-                    on_release: popup_after_add_from_csv.dismiss()
+                    on_release: popup_after_add_from_file.dismiss()
 
         GridLayout:
             cols: 2
@@ -233,7 +233,7 @@ RootWidget:
 
         Button:
             size_hint_y: 0.2
-            text: "Csv import"
+            text: "File import"
             on_release: popup_load_file.open()
 
         Button:

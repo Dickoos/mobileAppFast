@@ -3,6 +3,7 @@ import os
 import datetime
 from typing import List, Dict
 
+from xml.etree import ElementTree
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.properties import ObjectProperty, ListProperty, NumericProperty
@@ -38,7 +39,7 @@ class RootWidget(BoxLayout):
     # Pop-up message
     popup_invalid_data = ObjectProperty(None)
     popup_error_data = ObjectProperty(None)
-    popup_after_add_from_csv = ObjectProperty(None)
+    popup_after_add_from_file = ObjectProperty(None)
 
     # Pop-up fields
     popup_text_input_name = ObjectProperty(None)
@@ -75,7 +76,7 @@ class RootWidget(BoxLayout):
 
     # Variables to work with csv
     error_data = ListProperty()
-    added_from_csv = NumericProperty()
+    added_from_file = NumericProperty()
 
     @staticmethod
     def check_correct_phone(phone: str) -> bool:
@@ -124,6 +125,28 @@ class RootWidget(BoxLayout):
 
         with open(filename, encoding="utf-8") as csv_file:
             return [dict(row) for row in csv.DictReader(csv_file, delimiter='/')]
+
+    @staticmethod
+    def get_xml_dict(filename: str) -> List[Dict[str, str]]:
+        """
+        Reads data from a xml file and returns a list with data.
+
+        :param filename: Name of the file (along with the path).
+        :return: Data list.
+        """
+
+        result = list()
+
+        try:
+            for contact in ElementTree.parse(filename).getroot():
+                temp_dict = dict()
+                for field in contact:
+                    temp_dict.update({field.tag: field.text})
+                result.append(temp_dict)
+        except ElementTree.ParseError:
+            result = list()
+
+        return result
 
     @staticmethod
     def get_password(text_input: ObjectProperty) -> None:
@@ -289,12 +312,12 @@ class RootWidget(BoxLayout):
                                       self.popup_text_input_password.text, self.popup_text_input_phone.text,
                                       self.popup_text_input_email.text, self.popup_text_input_user_type.text):
             self.error_data.pop(0)
-            self.added_from_csv += 1
+            self.added_from_file += 1
             if len(self.error_data):
                 self.load_new_error_data_in_fields()
             else:
                 self.popup_error_data.dismiss()
-                self.popup_after_add_from_csv.open()
+                self.popup_after_add_from_file.open()
         else:
             # Since we cannot say in which field the error is, we paint them in a different color just in case
             self.popup_text_input_email.background_color = "pink"
@@ -467,15 +490,21 @@ class RootWidget(BoxLayout):
         self.text_input_login.disabled = False
         self.text_input_password.disabled = False
 
-    def load_csv(self, filename: str) -> None:
+    def load_file(self, filename: str) -> None:
         """
-        Uploading csv file with users.
+        Uploading csv/xml file with users.
 
         :param filename: File name.
         :return: None.
         """
 
-        data_list = self.get_csv_dict(filename)
+        if filename[-3:] == "csv":
+            data_list = self.get_csv_dict(filename)
+        elif filename[-3:] == "xml":
+            data_list = self.get_xml_dict(filename)
+        else:
+            self.popup_invalid_data.open()
+            return
 
         # Silly file validation check.
         try:
@@ -488,13 +517,19 @@ class RootWidget(BoxLayout):
         except KeyError:
             self.popup_invalid_data.open()
             return
+        except IndexError:
+            self.popup_invalid_data.open()
+            return
 
         self.error_data = []
-        self.added_from_csv = 0
+        self.added_from_file = 0
         for row in data_list:
             all_right = True
             for key in row.keys():
-                if row[key] == '':
+                if row[key] is None:
+                    row[key] = ''
+                    all_right = False
+                elif row[key] == '':
                     all_right = False
 
             if not all_right:
@@ -507,7 +542,7 @@ class RootWidget(BoxLayout):
 
                 self.error_data.append(row)
             else:
-                self.added_from_csv += 1
+                self.added_from_file += 1
 
         if len(self.error_data) != 0:
             self.popup_error_data.open()
