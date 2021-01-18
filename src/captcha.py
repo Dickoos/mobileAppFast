@@ -12,6 +12,15 @@ class Captcha:
         :return: Finished captcha image + answer.
         """
 
+        # Colors
+        background_colors = [
+            (205, 0, 116), (153, 38, 103), (133, 0, 75), (230, 57, 155), (230, 103, 175),
+            (255, 0, 0), (191, 48, 48), (166, 0, 0), (255, 64, 64), (255, 115, 115),
+            (113, 9, 170), (95, 37, 128), (72, 3, 111), (159, 62, 213), (173, 102, 213)
+        ]
+        text_colors = [(159, 238, 0), (134, 179, 45), (103, 155, 0), (185, 247, 62), (201, 247, 111)]
+        line_colors = [(0, 158, 142), (30, 119, 109), (0, 103, 92), (52, 207, 190), (93, 207, 195)]
+
         image_width = 100
         image_height = 50
 
@@ -24,13 +33,13 @@ class Captcha:
         text_size = 14
         text_coordinates_start = get_random_coordinates(int(image_width * 0.1), int(image_height * 0.5))
 
-        image = Image.new("RGB", (image_width, image_height), get_random_color())
+        image = Image.new("RGB", (image_width, image_height), choice(background_colors))
         draw = ImageDraw.Draw(image)
 
         for i in range(count_of_lines):
             draw.line(
                 (get_random_coordinates(image_width, image_height), get_random_coordinates(image_width, image_height)),
-                fill=get_random_color(),
+                fill=choice(line_colors),
                 width=randint(line_width_min, line_width_max)
             )
 
@@ -38,7 +47,7 @@ class Captcha:
             draw.point(get_random_coordinates(image_width, image_height), fill=get_random_color())
 
         text = get_random_text()
-        text_color = get_random_color()
+        text_color = choice(text_colors)
         text_font_file = "src/fonts/ComicNeue-Bold.ttf"
         text_font = ImageFont.truetype(text_font_file, text_size)
         draw.text(text_coordinates_start, text, fill=text_color, font=text_font)
