@@ -479,7 +479,12 @@ class RootWidget(BoxLayout):
 
         # Silly file validation check.
         try:
-            data_list[0]["name"]
+            temp = data_list[0]["name"]
+            temp = data_list[0]["login"]
+            temp = data_list[0]["password"]
+            temp = data_list[0]["phone"]
+            temp = data_list[0]["email"]
+            temp = data_list[0]["type"]
         except KeyError:
             self.popup_invalid_data.open()
             return

@@ -7,7 +7,7 @@ class Captcha:
     @staticmethod
     def get_captcha() -> (Image, str):
         """
-        Returns a captcha drawing 400 * 200.
+        Returns a captcha drawing 100 * 50.
 
         :return: Finished captcha image + answer.
         """
