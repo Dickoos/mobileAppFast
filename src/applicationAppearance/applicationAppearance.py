@@ -1,6 +1,7 @@
 import csv
 import os
 import datetime
+from string import digits
 from typing import List, Dict
 
 from xml.etree import ElementTree
@@ -87,7 +88,14 @@ class RootWidget(BoxLayout):
         :return: Is phone number correct.
         """
 
-        return len(phone) == 11
+        if len(phone) != 11:
+            return False
+
+        for num in phone:
+            if num not in digits:
+                return False
+
+        return True
 
     @staticmethod
     def check_correct_date(date: str) -> bool:
