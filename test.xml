@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<data>
+    <contact1>
+        <name>Маматмуратова Эльмира Баходировна</name>
+        <login>ellie</login>
+        <password>1111</password>
+        <phone>89261963335</phone>
+        <email>elmiramamatmuratova@gmail.com</email>
+        <type></type>
+    </contact1>
+    <contact2>
+        <name>Алексеев Николай Сергеевич</name>
+        <login>admin</login>
+        <password>admin</password>
+        <phone>89260282552</phone>
+        <email>asakura475@gmail.com</email>
+        <type>1</type>
+    </contact2>
+    <contact3>
+        <name>Тест Тестович</name>
+        <login>usual</login>
+        <password>123</password>
+        <phone>86666669999</phone>
+        <email>test@test.test</email>
+        <type>2</type>
+    </contact3>
+</data>
